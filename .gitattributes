@@ -1,0 +1,2 @@
+bin/bin/deno filter=lfs diff=lfs merge=lfs -text
+bin/bin/HTTPie-2024.1.2.AppImage[[:space:]]bin/bin/hugo[[:space:]]bin/bin/ghostty[[:space:]]bin/bin/HTTPie-2025.2.0.AppImage filter=lfs diff=lfs merge=lfs -text
