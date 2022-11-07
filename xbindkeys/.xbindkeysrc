@@ -1,0 +1,41 @@
+# Add a new keybinding with:
+# 1. Find the appropriate keybinding `xbindkeys --key`
+# 2. Add it into this file
+# 3. killall xbindkeys; xbindkeys
+
+# Alternative to: "dmenu_run -fn arial"
+"rofi -combi-modi run,window -show combi -modi combi -matching fuzzy -levenshtein-sort"
+    Mod4 + d
+
+# Since the original brightness keys are not responding since
+# upgrading to Linux 5.16, bind F2 and F3 (which are also Decrease and
+# Increase Volume) to Brightness.
+
+"~/bin/brightness darker"
+    F2
+
+"~/bin/brightness brighter"
+    F3
+
+"flameshot gui"
+    Print
+
+"okshot -c"
+    Scroll_Lock
+
+"kitty"
+    Mod4 + Return
+
+# -a: If Emacs Server is not running, start it.
+# -c: Start in a new frame.
+"emacsclient -c -a=''"
+    Mod4 + Tab
+
+# Remote control spotify
+
+"dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+     F6
+"dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous"
+     F7
+"dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+     F8
