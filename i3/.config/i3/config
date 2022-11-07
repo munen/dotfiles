@@ -1,0 +1,201 @@
+# http://i3wm.org/docs/userguide.html for a complete reference
+
+# set $mod Mod1
+set $mod Mod4
+
+# Helper function to move a floating window (for example a webcam)
+# from the very top to the very bottom quickly.
+# Usage: hit Mod4+shift+m, then Up or Down keys, then Mod4+shift+m,
+# again.
+mode "moveit" {
+    bindsym Up move up 1420px
+    bindsym Down move down 1420px
+    bindsym Mod4+shift+m mode "default"
+}
+bindsym Mod4+shift+m focus floating; mode "moveit"
+
+for_window [class="^.*"] border pixel 1
+
+for_window [class="sun-awt-X11-XFramePeer"] floating enable
+for_window [class="java-lang-Thread"] floating enable
+for_window [class="vr_logorrhoe-core"] floating enable
+for_window [class="xfreerdp"] floating enable
+
+# Move floating windows to 'scratchpad' workspace
+bindsym $mod+x [floating] move scratchpad
+# Bring back floating windows from 'scratchpad'
+bindsym $mod+shift+x scratchpad show
+
+# font for window titles
+font pango:DejaVu Sans 8
+
+# make window sticky
+bindsym $mod+Shift+s sticky toggle
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# kill focused window
+bindsym control+Shift+K kill
+
+# lock
+bindsym $mod+ctrl+l exec i3lock-fancy
+
+# move whole workspace to the monitor to the right (it's a thorus!)
+bindsym $mod+m move workspace to output right
+
+# move between workspaces with left/right arrow keys
+bindsym $mod+Mod1+Left workspace prev
+bindsym $mod+Mod1+Right workspace next
+
+# change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+J move left
+bindsym $mod+Shift+K move down
+bindsym $mod+Shift+L move up
+bindsym $mod+Shift+colon move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+b split horizontal
+
+# split in vertical orientation
+bindsym $mod+v split vertical
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change container layout (stacked, tabbed, default)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout default
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindcode $mod+d focus child
+
+# switch to workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# also use F-keys as additional workspaces
+# (Thx nico.schottelius@ungleich.ch!)
+bindsym $mod+F1  workspace 11:F1
+bindsym $mod+F2  workspace 12:F2
+bindsym $mod+F3  workspace 13:F3
+bindsym $mod+F4  workspace 14:F4
+bindsym $mod+F5  workspace 15:F5
+bindsym $mod+F6  workspace 16:F6
+bindsym $mod+F7  workspace 17:F7
+bindsym $mod+F8  workspace 18:F8
+bindsym $mod+F9  workspace 19:F9
+bindsym $mod+F10 workspace 20:F10
+bindsym $mod+F11 workspace 21:F11
+bindsym $mod+F12 workspace 22:F12
+
+bindsym $mod+Shift+F1 move workspace 11:F1
+bindsym $mod+Shift+F2 move workspace 12:F2
+bindsym $mod+Shift+F3 move workspace 13:F3
+bindsym $mod+Shift+F4 move workspace 14:F4
+bindsym $mod+Shift+F5 move workspace 15:F5
+bindsym $mod+Shift+F6 move workspace 16:F6
+bindsym $mod+Shift+F7 move workspace 17:F7
+bindsym $mod+Shift+F8 move workspace 18:F8
+bindsym $mod+Shift+F9 move workspace 19:F9
+bindsym $mod+Shift+F10 move workspace 20:F10
+bindsym $mod+Shift+F11 move workspace 21:F11
+bindsym $mod+Shift+F12 move workspace 22:F12
+
+# move focused container to workspace
+bindsym $mod+Shift+exclam move container to workspace 1
+bindsym $mod+Shift+at move container to workspace 2
+bindsym $mod+Shift+numbersign move container to workspace 3
+bindsym $mod+Shift+dollar move container to workspace 4
+bindsym $mod+Shift+percent move container to workspace 5
+bindsym $mod+Shift+asciicircum move container to workspace 6
+bindsym $mod+Shift+ampersand move container to workspace 7
+bindsym $mod+Shift+asterisk move container to workspace 8
+bindsym $mod+Shift+parenleft move container to workspace 9
+bindsym $mod+Shift+parenright move container to workspace 10
+
+# reload the configuration file
+bindsym $mod+Shift+C reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+R restart
+# exit i3 (logs you out of your X session)
+# Safeguard, don't bind
+# bindsym $mod+Shift+E exit
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 8 px or 8 ppt
+        bindsym k resize grow height 8 px or 8 ppt
+        bindsym l resize shrink height 8 px or 8 ppt
+        bindsym semicolon resize grow width 8 px or 8 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym 113 resize shrink width 8 px or 8 ppt
+        bindsym 116 resize grow height 8 px or 8 ppt
+        bindsym 111 resize shrink height 8 px or 8 ppt
+        bindsym 114 resize grow width 8 px or 8 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+# bar {
+#         status_command my_i3status.sh
+# }
+
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id /usr/bin/xbindkeys
+
+new_window 1pixel
+bindsym XF86MonBrightnessUp exec "~/bin/brightness brighter"
+bindsym XF86MonBrightnessDown exec "~/bin/brightness darker"
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
