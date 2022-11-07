@@ -190,8 +190,12 @@ bindsym $mod+r mode "resize"
 #         status_command my_i3status.sh
 # }
 
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
-exec_always --no-startup-id /usr/bin/xbindkeys
+bar {
+	status_command i3status
+}
+
+# exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id $HOME/.guix-profile/bin/xbindkeys
 
 new_window 1pixel
 bindsym XF86MonBrightnessUp exec "~/bin/brightness brighter"
