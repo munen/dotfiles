@@ -1,0 +1,12 @@
+(specifications->manifest
+ '("emacs"
+   "emacs-org-auto-tangle"
+   "emacs-magit"
+   "emacs-forge"
+   "mu"
+   "emacs-spaceline"
+   "font-fira-code"
+   "font-google-noto"
+   "emacs-spacemacs-theme"
+   "emacs-hl-todo"
+))
