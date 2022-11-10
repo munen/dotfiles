@@ -1,0 +1,16 @@
+* Dotfiles
+
+This repository contains all my public configuration files. I manage
+the dotfiles with [[https://www.gnu.org/software/stow/][GNU Stow]].
+
+Configuration containing sensitive information is in a separate
+private dotfiles repository. It includes configuration for:
+
+#+begin_src shell :results list :exports results
+  ls ~/dotfiles_private
+#+end_src
+
+#+RESULTS:
+- ("git")
+- ("gnupg")
+- ("ssh")
