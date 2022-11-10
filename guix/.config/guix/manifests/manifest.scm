@@ -9,9 +9,12 @@
                                 "pinentry"
 
                                 "icecat"
+                                "ungoogled-chromium"
                                 "pavucontrol"
                                 "xbindkeys"
                                 "polybar"
+                                "turbovnc"
+                                "brightnessctl"
 
                                 "keepassxc"
 
@@ -23,6 +26,7 @@
 
                                 "vim"
                                 "unzip"
+                                "sqlite"
 
                                 "emacs"
                                 "emacs-pdf-tools"
