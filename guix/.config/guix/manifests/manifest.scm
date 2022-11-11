@@ -1,26 +1,19 @@
-;; What follows is a "manifest" equivalent to the command line you gave.
-;; You can store it in a file that you may then pass to any 'guix' command
-;; that accepts a '--manifest' (or '-m') option.
-
 (specifications->manifest (list "git"
+                                "git-lfs"
                                 "openssh"
 
                                 "gnupg"
                                 "pinentry"
 
+                                "glibc-locales" ; Important, otherwise
+                                                ; $LANG and $LC_* does
+                                                ; not work in Guix.
+                                                ; https://guix.gnu.org/manual/devel/en/html_node/Application-Setup.html#Locales-1
+
                                 "icecat"
                                 "ungoogled-chromium"
-                                "pavucontrol"
-                                "xbindkeys"
-                                "polybar"
-                                "turbovnc"
-                                "brightnessctl"
 
                                 "keepassxc"
-
-                                "polybar"
-                                "kitty"
-                                "rofi"
 
                                 "stow"
 
@@ -38,4 +31,4 @@
                                 "emacs-spaceline"
                                 "hunspell" "hunspell-dict-de"
 
-                                "pulseaudio"))
+                                ))
