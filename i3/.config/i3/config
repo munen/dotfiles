@@ -197,6 +197,10 @@ bar {
 # exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id $HOME/.guix-profile/bin/xbindkeys
 
+# For media laptop
+exec_always --no-startup-id "xinput set-prop \"ETPS/2 Elantech Touchpad\" \"libinput Tapping Enabled\" 1"
+exec_always --no-startup-id "xinput set-prop \"ETPS/2 Elantech Touchpad\" \"libinput Natural Scrolling Enabled\" 1"
+
 new_window 1pixel
 bindsym XF86MonBrightnessUp exec "~/bin/brightness brighter"
 bindsym XF86MonBrightnessDown exec "~/bin/brightness darker"
