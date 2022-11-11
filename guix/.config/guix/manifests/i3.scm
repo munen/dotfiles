@@ -12,4 +12,6 @@
 
                                 "kitty"
                                 "rofi"
+
+                                "xinput"            ; touchpad config
                                 ))
