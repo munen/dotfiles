@@ -13,5 +13,8 @@
                                 "kitty"
                                 "rofi"
 
+                                "keychain"
+                                "gnome-keyring"
+
                                 "xinput"            ; touchpad config
                                 ))
