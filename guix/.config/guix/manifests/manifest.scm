@@ -5,6 +5,11 @@
                                 "gnupg"
                                 "pinentry"
 
+                                "glibc-locales" ; Important, otherwise
+                                                ; $LANG and $LC_* does
+                                                ; not work in Guix.
+                                                ; https://guix.gnu.org/manual/devel/en/html_node/Application-Setup.html#Locales-1
+
                                 "icecat"
 
                                 "keepassxc"
