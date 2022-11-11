@@ -33,6 +33,10 @@
                                 "emacs-spacemacs-theme"
                                 "emacs-hl-todo"
                                 "emacs-spaceline"
-                                "hunspell" "hunspell-dict-de"
+
+                                "hunspell"
+                                "hunspell-dict-de"
+                                "hunspell-dict-en-us"
+                                "hunspell-dict-en-gb"
 
                                 ))
