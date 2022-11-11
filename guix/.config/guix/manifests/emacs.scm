@@ -2,7 +2,7 @@
  '("emacs"
    "emacs-org-auto-tangle"
    "emacs-magit"
-   "emacs-forge"
+   ;; "emacs-forge" ; temporarily disable, because it cannot be built
    "mu"
    "emacs-spaceline"
    "font-fira-code"
