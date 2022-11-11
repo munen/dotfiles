@@ -5,6 +5,8 @@
                                 "gnupg"
                                 "pinentry"
 
+                                "flatpak"
+
                                 "glibc-locales" ; Important, otherwise
                                                 ; $LANG and $LC_* does
                                                 ; not work in Guix.
@@ -20,6 +22,8 @@
                                 "vim"
                                 "unzip"
                                 "sqlite"
+
+				"the-silver-searcher"
 
                                 "emacs"
                                 "emacs-pdf-tools"
