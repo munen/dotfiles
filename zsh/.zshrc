@@ -282,7 +282,7 @@ export XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/:/usr/share/g
 function ssh() {
   kitty @ set-colors foreground=#222
   kitty @ set-colors background=#BA8
-  /usr/bin/ssh $@
+  .guix-profile/bin/ssh $@
   kitty @ set-colors --reset
 }
 
