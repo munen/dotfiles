@@ -274,5 +274,3 @@ function ssh() {
 
 # Planck via src/200ok/planck
 alias planck='docker run -v `pwd`:/workdir --rm -ti twohundredok/planck'
-
-source .profile
