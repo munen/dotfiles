@@ -1,7 +1,9 @@
 ;; This is an operating system configuration generated
 ;; by the graphical installer.
 
-(use-modules (gnu))
+(use-modules (gnu)
+             (gnu packages shells))
+
 (use-service-modules desktop networking ssh xorg)
 
 (operating-system
@@ -15,6 +17,7 @@
                   (comment "Alain M. Lafon")
                   (group "users")
                   (home-directory "/home/munen")
+                  (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups
                     '("wheel" "netdev" "audio" "video")))
                 %base-user-accounts))
