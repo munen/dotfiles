@@ -38,4 +38,6 @@
                                 "hunspell-dict-en-us"
                                 "hunspell-dict-en-gb"
 
+                                "autojump"
+
                                 ))
