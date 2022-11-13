@@ -266,7 +266,7 @@ alias xr1="$XRANDR --auto" # mirror
 alias xr2="$XRANDR --auto --right-of $SCREEN1 --scale-from $PRIMARY_RESOLUTION"
 
 # Autojump
-. /usr/share/autojump/autojump.sh
+. .guix-profile/share/autojump/autojump.zsh
 
 # Pip binaries
 export PATH="/home/munen/.local/bin/:$PATH"
