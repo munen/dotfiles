@@ -3,6 +3,9 @@
 This repository contains all my public configuration files. I manage
 the dotfiles with [[https://www.gnu.org/software/stow/][GNU Stow]].
 
+My computers run either Guix System, or Debian with Guix. Non-Free
+software, I get through flatpak.
+
 Configuration containing sensitive information is in a separate
 private dotfiles repository. It includes configuration for:
 
@@ -14,3 +17,13 @@ private dotfiles repository. It includes configuration for:
 - ("git")
 - ("gnupg")
 - ("ssh")
+
+** Install Non-Free software
+
+#+begin_src shell :exports code
+  flatpak install -y flathub com.spotify.Client
+  flatpak install -y flathub us.zoom.Zoom
+  flatpak install -y flathub com.slack.Slack
+#+end_src
+
+#+RESULTS:
