@@ -1,12 +1,3 @@
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-# ZSH_THEME="robbyrussell"
-
 # smart-case and use user
 alias ag='ag -S --pager=less'
 
@@ -37,8 +28,6 @@ HISTSIZE=4000
 SAVEHIST=4000
 
 plugins=(git bundler vi-mode)
-
-source $ZSH/oh-my-zsh.sh
 
 case `uname` in
 Darwin)
@@ -93,7 +82,11 @@ Linux)
   alias ls='ls -F --color=auto'
 
   # Activate NVM
-  source ~/.nvm/nvm.sh
+
+  if [[ -f ~/.nvm/nvm.sh ]]; then
+    source ~/.nvm/nvm.sh
+  fi
+
   ;;
 esac
 
@@ -149,8 +142,10 @@ CASE_SENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 
 # rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+if (( $+commands[rbenv] )); then
+   export PATH="$HOME/.rbenv/bin:$PATH"
+   eval "$(rbenv init -)"
+fi
 
 # rails
 export PATH=./bin:$PATH
@@ -204,8 +199,6 @@ load-local-conf() {
 }
 add-zsh-hook chpwd load-local-conf
 
-source ~/.sourceme
-
 # The SOURCEME_REPO is the path where your clone of the sourceme repo
 # lives.
 export SOURCEME_REPO=~/src/200ok/sourceme
@@ -241,8 +234,11 @@ load-nvmrc() {
     nvm use default
   fi
 }
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
+
+if (( $+commands[nvm] )); then
+  add-zsh-hook chpwd load-nvmrc
+  load-nvmrc
+fi
 
 # Manually sync the client to a swiss NTP server and inform how far
 # off the clock is
@@ -266,7 +262,7 @@ alias xr1="$XRANDR --auto" # mirror
 alias xr2="$XRANDR --auto --right-of $SCREEN1 --scale-from $PRIMARY_RESOLUTION"
 
 # Autojump
-. /usr/share/autojump/autojump.sh
+. .guix-profile/share/autojump/autojump.zsh
 
 # Pip binaries
 export PATH="/home/munen/.local/bin/:$PATH"
