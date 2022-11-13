@@ -3,7 +3,6 @@
                                 "openssh"
 
                                 "gnupg"
-                                "pinentry"
 
                                 "flatpak"
 
