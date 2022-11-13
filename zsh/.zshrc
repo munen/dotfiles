@@ -141,17 +141,6 @@ CASE_SENSITIVE="true"
 # Uncomment following line if you want red dots to be displayed while waiting for completion
 COMPLETION_WAITING_DOTS="true"
 
-# rbenv
-if (( $+commands[rbenv] )); then
-   export PATH="$HOME/.rbenv/bin:$PATH"
-   eval "$(rbenv init -)"
-fi
-
-# rails
-export PATH=./bin:$PATH
-
-export PATH=$HOME/bin:$PATH
-
 # disable zsh auto correct
 unsetopt correct_all
 
@@ -267,11 +256,6 @@ alias xr2="$XRANDR --auto --right-of $SCREEN1 --scale-from $PRIMARY_RESOLUTION"
 # Pip binaries
 export PATH="/home/munen/.local/bin/:$PATH"
 
-# GUIX
-export PATH="/home/munen/.config/guix/current/bin/:$PATH"
-export GUIX_PROFILE="$HOME/.guix-profile"
-. "$GUIX_PROFILE/etc/profile"
-
 export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
 # export GUIX_PROFILE="/home/munen/.config/guix/current"
@@ -290,3 +274,5 @@ function ssh() {
 
 # Planck via src/200ok/planck
 alias planck='docker run -v `pwd`:/workdir --rm -ti twohundredok/planck'
+
+source .profile
