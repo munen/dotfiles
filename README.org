@@ -24,6 +24,13 @@ private dotfiles repository. It includes configuration for:
   flatpak install -y flathub com.spotify.Client
   flatpak install -y flathub us.zoom.Zoom
   flatpak install -y flathub com.slack.Slack
+  flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
 #+end_src
 
-#+RESULTS:
+*** Teams
+
+I'm using the [[https://github.com/IsmaelMartinez/teams-for-linux][GPL licensed package of Teams]] instead of the version by
+Microsoft. Firstly, because the version of Microsoft asks me to login
+after I have logged in and then says I have no teams account (yes, it
+did) and [[https://news.ycombinator.com/item?id=32678839][secondly, because they are about to retire the Linux version]]
+of their product.
