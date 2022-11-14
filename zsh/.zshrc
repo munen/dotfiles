@@ -261,7 +261,7 @@ export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 # export GUIX_PROFILE="/home/munen/.config/guix/current"
 # . "$GUIX_PROFILE/etc/profile"
 
-export XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/:/usr/share/glib-2.0/schemas
+export XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/:/usr/share/glib-2.0/schemas:/var/lib/flatpak/exports/share:/home/munen/.local/share/flatpak/exports/share
 
 function ssh() {
   kitty @ set-colors foreground=#222
