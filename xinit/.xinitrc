@@ -105,4 +105,10 @@ udiskie --automount --notify --tray &
 
 dunst &
 
+# Bug fixes for Guix in Debian:
+
+# Otherwise the xcursor path from Guix will be used and the cursor
+# will be very small.
+export XCURSOR_PATH=/usr/share/icons/:/home/munen/.guix-profile/share/icons
+
 exec i3
