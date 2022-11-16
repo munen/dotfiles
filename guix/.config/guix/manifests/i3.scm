@@ -2,6 +2,7 @@
                                 "polybar"
                                 "hicolor-icon-theme" ; @0.17
                                 "adwaita-icon-theme" ; @42.0
+				"xset"
 
                                 "dunst"              ; @1.9.0
                                 "brightnessctl"
