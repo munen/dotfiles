@@ -1,3 +1,5 @@
 #!/bin/sh
 
+# use this script as actions for "Firefox > Preferences > Applications > zoommtg"
+
 QT_SCALE_FACTOR=0.75 flatpak run us.zoom.Zoom $*
