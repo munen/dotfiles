@@ -1,0 +1,11 @@
+Xft.dpi: 286
+Xft.autohint: 0
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+Xcursor.size: 48
+
+Xpdf*fontList: -adobe-helvetica-bold-r-normal--0-0-0-0-p-0-iso8859-1
+Xpdf.initialZoom: 200
