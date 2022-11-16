@@ -1,3 +1,5 @@
+source .profile
+
 # smart-case and use user
 alias ag='ag -S --pager=less'
 
@@ -258,9 +260,6 @@ export PATH="/home/munen/.local/bin/:$PATH"
 
 export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
-# export GUIX_PROFILE="/home/munen/.config/guix/current"
-# . "$GUIX_PROFILE/etc/profile"
-
 export XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/:/usr/share/glib-2.0/schemas:/var/lib/flatpak/exports/share:/home/munen/.local/share/flatpak/exports/share
 
 function ssh() {
@@ -274,3 +273,12 @@ function ssh() {
 
 # Planck via src/200ok/planck
 alias planck='docker run -v `pwd`:/workdir --rm -ti twohundredok/planck'
+
+# Bug fix for Guix in Debian
+
+# Guix sets this env variable. However, when using Debian binaries
+# like `gsettings`, this will lead to an interesting situation where a
+# Guix glibc is used. However, the versions don't match and yields a
+# 'symbol lookup error'.
+unset GIO_EXTRA_MODULES
+# export GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules:/home/munen/.guix-profile/lib/gio/modules:/home/munen/.guix-profile/lib/gio/modules
