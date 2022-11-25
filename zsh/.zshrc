@@ -1,4 +1,4 @@
-source .profile
+source ~/.profile
 
 # smart-case and use user
 alias ag='ag -S --pager=less'
@@ -146,9 +146,6 @@ COMPLETION_WAITING_DOTS="true"
 # disable zsh auto correct
 unsetopt correct_all
 
-# vi mode
-set -o vi
-
 # Recomy
 export JS_DRIVER=phantomjs
 
@@ -253,7 +250,7 @@ alias xr1="$XRANDR --auto" # mirror
 alias xr2="$XRANDR --auto --right-of $SCREEN1 --scale-from $PRIMARY_RESOLUTION"
 
 # Autojump
-. .guix-profile/share/autojump/autojump.zsh
+. ~/.guix-profile/share/autojump/autojump.zsh
 
 # Pip binaries
 export PATH="/home/munen/.local/bin/:$PATH"
@@ -265,7 +262,7 @@ export XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/:/usr/share/g
 function ssh() {
   kitty @ set-colors foreground=#222
   kitty @ set-colors background=#BA8
-  .guix-profile/bin/ssh $@
+  ~/.guix-profile/bin/ssh $@
   kitty @ set-colors --reset
 }
 
@@ -282,3 +279,6 @@ alias planck='docker run -v `pwd`:/workdir --rm -ti twohundredok/planck'
 # 'symbol lookup error'.
 unset GIO_EXTRA_MODULES
 # export GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules:/home/munen/.guix-profile/lib/gio/modules:/home/munen/.guix-profile/lib/gio/modules
+
+# vi mode
+set -o vi
