@@ -40,4 +40,6 @@
 
                                 "autojump"
 
+                                "inkscape"
+
                                 ))
