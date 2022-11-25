@@ -186,6 +186,7 @@ load-local-conf() {
   fi
 }
 add-zsh-hook chpwd load-local-conf
+load-local-conf
 
 # The SOURCEME_REPO is the path where your clone of the sourceme repo
 # lives.
