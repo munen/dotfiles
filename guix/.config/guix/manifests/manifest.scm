@@ -42,4 +42,8 @@
 
                                 "inkscape"
 
+                                "sshfs"
+
+                                "mpv"
+
                                 ))
