@@ -1,0 +1,3 @@
+#!/bin/sh
+
+QT_DEVICE_PIXEL_RATIO=2 /usr/bin/obs

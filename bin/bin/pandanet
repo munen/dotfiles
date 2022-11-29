@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/opt/pandanet/GoPanda2.AppImage --no-sandbox

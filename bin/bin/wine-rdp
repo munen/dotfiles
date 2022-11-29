@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker-wine --rdp --volume="/home/munen/Downloads:/tmp/downloads"

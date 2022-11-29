@@ -1,0 +1,8 @@
+#!/bin/bash
+
+PORT=${1:-3000}
+
+echo "Diabling port: ${PORT}"
+
+sudo ip6tables -D INPUT -p tcp --dport $PORT -j ACCEPT
+sudo iptables -D INPUT -p tcp --dport $PORT -j ACCEPT

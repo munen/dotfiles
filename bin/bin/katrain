@@ -1,0 +1,3 @@
+#!/bin/sh
+
+KIVY_METRICS_DENSITY=2 /home/munen/.local/bin/katrain $@

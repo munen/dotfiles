@@ -1,0 +1,27 @@
+#!/bin/zsh
+
+# This shellscript these parameters:
+# $1: The Mail account name (i.e. 200ok|zen-tempel)
+# $2: The name of the spam folder (i.e. INBOX.spambucket)
+# $3: The name of the blacklist folder (i.e. INBOX.blacklist)
+
+process_email() {
+  # Find all new files (updated in the last 5min) in the inbox
+  for file in `find ~/Maildir/$1/INBOX/new -type f  -cmin -5`
+  do
+    echo "Processing $file with procmail"
+    # `procmail` requires these parameters:
+    # `procmail -a "200ok" -a "/home/munen/Maildir_bak/200ok/INBOX/new/test_mail" -a "test_mail" -a "INBOX.spambucket" -a "INBOX.blacklist" < test_mail`
+    FILENAME=`basename $file`
+
+    echo "procmail -a $1 -a '$file' -a $FILENAME -a '$2' -a '$3' < $file"
+
+    procmail -a $1 -a "$file" -a $FILENAME -a "$2" -a "$3" < "$file"
+  done
+}
+
+process_email $1 $2 $3
+
+cd ~/Maildir/
+git add .
+git commit -m"Automated commit: $(date)"

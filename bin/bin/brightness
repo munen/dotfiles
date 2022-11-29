@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+# When using the proprietary nvidia driver:
+#CARD="nvidia_0"
+
+# When using the OSS intel driver
+CARD="intel_backlight"
+
+# Get maximum brightness from `/sys` which is provided by the kernel
+def max_brightness
+  `cat /sys/class/backlight/#{CARD}/max_brightness`.to_i
+end
+
+# Get current brightness from `/sys` which is provided by the kernel
+def current_brightness
+  `cat /sys/class/backlight/#{CARD}/brightness`.to_i
+end
+
+@max_brightness = max_brightness
+@brightness = current_brightness
+
+def brighter
+  @brightness = (@brightness * 1.1).to_i
+
+  # Failsafe
+  @brightness = @max_brightness if(@brightness > @max_brightness)
+
+  # Start with a little light
+  @brightness = 10 if (@brightness < 10)
+end
+
+def darker
+  @brightness = (@brightness * 0.9).to_i
+  @brightness = 0 if (@brightness < 5)
+end
+
+# Note: This needs passwordless sudo privileges
+def set_brightness
+  `echo #{@brightness} | sudo tee /sys/class/backlight/#{CARD}/brightness`
+  puts @brightness
+end
+
+def get_status
+  puts "💡 #{(100 * @brightness / @max_brightness).to_i}%"
+end
+
+case ARGV[0]
+when "darker"
+  darker
+  set_brightness
+when "brighter"
+  brighter
+  set_brightness
+when "status"
+  get_status
+when "dark"
+  @brightness = 0
+  set_brightness
+when "bright"
+  @brightness = max_brightness
+  set_brightness
+else
+  puts 'Usage: brightness [darker|brighter|status|dark|bright'
+end
