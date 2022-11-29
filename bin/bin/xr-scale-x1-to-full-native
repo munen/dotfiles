@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Companion to xr-scale-x1-to-full-hd
+
+# The X1 extreme 2nd has a native resolution of 3840x2160 which is
+# exactly half of 1920x1080. Setting the resolution normally doesn't
+# work, because the Nvidia driver doesn't allow for anything other
+# than the full resolution.
+
+xrandr --output DP-2 --auto --scale 1x1

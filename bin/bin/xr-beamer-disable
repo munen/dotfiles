@@ -1,0 +1,4 @@
+#!/bin/sh
+
+xrandr --output HDMI-0 --off
+xrandr --output DP-2 --scale-from 3840x2160

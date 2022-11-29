@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker-wine --volume="/opt/fox/wine_config:/home/wineuser/.wine/config" --volume="/opt/fox/foxwq:/home/wineuser/.wine/drive_c/Program Files (x86)/foxwq" wine ".wine/drive_c/Program Files (x86)/foxwq/foxwq.exe"

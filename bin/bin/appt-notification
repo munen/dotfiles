@@ -1,0 +1,6 @@
+#!/bin/sh
+
+TIME="$1"
+MSG="$2"
+
+notify-send -t 0 "Appointment in $TIME minutes: $MSG"

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+LANG=en_US /usr/bin/i3lock-fancy

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# This doesn't set the beamer to it's prefered resolution, but to
+# 1920x1080 which is a a resolution with the same aspect ratio than
+# the one from the X1. This could be improved, of course, by checking
+# for the best match from the list returned by `xrandr`.
+
+# NB: If there's little time, `nvidia-settings` has a GUI with which
+# all resolutions can be set appropriately. In that, it is better than
+# `arandr` which only shows the preferred solution for the internal
+# display (which is the max resolution).
+
+# For example this returns the resolution of the internal display (in
+#  Ruby)
+# res = `xrandr | grep DP-2 | cut -f 3 -d ' '`
+# # res === "3840x2160+0+0"
+# res.match(/\d+x\d+/)[0]
+
+xrandr --output DP-2 --rate 60 --scale-from 1920x1080 --panning 1920x1080* --output HDMI-0 --mode 1920x1080 --same-as DP-2
