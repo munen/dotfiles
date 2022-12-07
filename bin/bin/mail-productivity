@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+`cd ~/Maildir`
+
+# Redirect the STDERR stream to the null device
+stderr_original = STDERR.dup
+STDERR.reopen(File::NULL)
+
+sent = `mu find from:alain date:today | sort | uniq`
+
+if $? == 0
+  sent_count = sent.split("\n").count
+else
+  sent_count = 0
+end
+
+# Restore the original STDERR stream
+STDERR.reopen(stderr_original)
+
+received = `mu find to:alain date:today | sort | uniq`
+received_count = received.split("\n").count
+
+puts "(S#{sent_count} . R#{received_count})"
