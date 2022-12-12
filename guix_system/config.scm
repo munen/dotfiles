@@ -20,6 +20,14 @@
                   (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups
                     '("wheel" "netdev" "audio" "video")))
+                (user-account
+                 (name "guest")
+                 (comment "Guest")
+                 (group "users")
+                 (home-directory "/home/guest")
+                 (shell (file-append zsh "/bin/zsh"))
+                 (supplementary-groups
+                  '("netdev" "audio" "video")))
                 %base-user-accounts))
   (packages
     (append
@@ -33,11 +41,9 @@
 	      (service openssh-service-type
 		       (openssh-configuration
 			 (x11-forwarding? #t)
-			 (permit-root-login #t) 
+			 (permit-root-login #t)
 			 ;; (permit-root-login 'without-password)
 			 ))
-
-
 	      %desktop-services))
   (bootloader
     (bootloader-configuration
