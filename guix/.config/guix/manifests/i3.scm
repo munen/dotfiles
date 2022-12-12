@@ -1,4 +1,5 @@
 (specifications->manifest (list "i3-wm"              ; @4.20.1
+                                "i3lock-fancy"
                                 "polybar"
                                 "hicolor-icon-theme" ; @0.17
                                 "adwaita-icon-theme" ; @42.0
