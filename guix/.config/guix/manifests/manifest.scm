@@ -16,6 +16,8 @@
 
                                 "keepassxc"
 
+                                "evince"
+
                                 "stow"
 
                                 "vim"
