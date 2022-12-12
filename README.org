@@ -1,4 +1,4 @@
-* Dotfiles
+* [#B] Dotfiles
 
 This repository contains all my public configuration files. I manage
 the dotfiles with [[https://www.gnu.org/software/stow/][GNU Stow]].
@@ -25,6 +25,7 @@ private dotfiles repository. It includes configuration for:
   flatpak install -y flathub us.zoom.Zoom
   flatpak install -y flathub com.slack.Slack
   flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
+  flatpak install -y flathub org.signal.Signal
 #+end_src
 
 *** Teams
