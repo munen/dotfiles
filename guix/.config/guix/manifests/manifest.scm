@@ -26,6 +26,8 @@
 
 				"the-silver-searcher"
 
+        "transmission"
+
                                 "emacs"
                                 "emacs-pdf-tools"
                                 "emacs-org-auto-tangle"
