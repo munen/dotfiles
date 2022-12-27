@@ -26,7 +26,7 @@
 
 				"the-silver-searcher"
 
-        "transmission"
+                                "qbittorrent"
 
                                 "emacs"
                                 "emacs-pdf-tools"
