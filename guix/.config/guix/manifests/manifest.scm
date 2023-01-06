@@ -26,6 +26,8 @@
 
 				"the-silver-searcher"
 
+                                "qbittorrent"
+
                                 "emacs"
                                 "emacs-pdf-tools"
                                 "emacs-org-auto-tangle"
