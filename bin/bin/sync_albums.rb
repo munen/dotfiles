@@ -91,7 +91,10 @@ for album in albums
   res = `#{cmd}`
   status = $?.exitstatus
 
-  exit "Quitting due to exit status: '#{status}' and response '#{res}'" unless status == 0
+  unless status == 0
+    puts "Quitting due to exit status: '#{status}' and response '#{res}'"
+    exit 1
+  end
 
   puts res
 end
