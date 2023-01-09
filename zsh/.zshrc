@@ -283,3 +283,4 @@ unset GIO_EXTRA_MODULES
 
 # vi mode
 set -o vi
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
