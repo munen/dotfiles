@@ -194,8 +194,8 @@ bindsym $mod+r mode "resize"
 # 	status_command i3status
 # }
 
-# exec_always --no-startup-id $HOME/.config/polybar/launch.sh
-exec_always --no-startup-id $HOME/.guix-profile/bin/polybar
+exec_always --no-startup-id $HOME/bin/launch_polybar.sh
+# exec_always --no-startup-id $HOME/.guix-profile/bin/polybar
 exec_always --no-startup-id $HOME/.guix-profile/bin/xbindkeys
 
 # For media laptop
