@@ -71,6 +71,7 @@ export ELM_SCALE=1
 export QT_SCREEN_SCALE_FACTORS=1
 export QT_SCALE_FACTOR=0.75
 export QT_AUTO_SCREEN_SCALE_FACTOR=1
+
 # Deprecated, but still used by some applications (OBS). However, when
 # also set globally, it'll screw up the other two QT settings. For
 # example keepassxc will have a huge interface, then. Hence, The

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# I'm setting the QT_SCALE_FACTOR in .xinitrc. It's required for some
+# apps like KeepassXC. However, digikam doesn't like it and _all_
+# modals will be completely disfunctional.
+
+env -u QT_SCALE_FACTOR /usr/bin/digikam
