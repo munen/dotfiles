@@ -14,6 +14,8 @@
                                 "icecat"
                                 "ungoogled-chromium"
 
+                                "openjdk@13.0.7"
+
                                 "keepassxc"
 
                                 "evince"
