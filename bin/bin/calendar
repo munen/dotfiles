@@ -1,0 +1,3 @@
+#!/bin/sh
+
+firefox "https://calendar.google.com/calendar/u/1/r" &
