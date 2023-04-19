@@ -267,6 +267,13 @@ function ssh() {
   kitty @ set-colors --reset
 }
 
+__set-window-title() {
+  # limit this to terminals, not consoles
+  [[ $(tty) =~ ^/dev/pts ]] && \
+    kitty @ set-window-title $(basename $PWD)
+}
+add-zsh-hook chpwd __set-window-title
+
 # export DICTPATH=/usr/share/hunspell/
 
 # Planck via src/200ok/planck
