@@ -26,6 +26,7 @@ private dotfiles repository. It includes configuration for:
   flatpak install -y flathub com.slack.Slack
   flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
   flatpak install -y flathub org.signal.Signal
+  flatpak install -y flathub com.google.Chrome
 #+end_src
 
 *** Teams
