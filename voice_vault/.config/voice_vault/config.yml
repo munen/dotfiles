@@ -1,0 +1,3 @@
+whisper_path: /home/munen/src/whisper.cpp
+whisper_model: small
+archive_folder: /home/munen/Dropbox/recordings
