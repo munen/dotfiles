@@ -4,4 +4,4 @@
 # apps like KeepassXC. However, digikam doesn't like it and _all_
 # modals will be completely disfunctional.
 
-env -u QT_SCALE_FACTOR /usr/bin/digikam
+env -u QT_SCALE_FACTOR /usr/bin/digikam $*
