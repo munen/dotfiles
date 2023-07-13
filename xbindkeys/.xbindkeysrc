@@ -31,6 +31,10 @@
 "emacsclient -c -a=''"
     Mod4 + Tab
 
+# https://github.com/tecosaur/emacs-everywhere/
+"emacsclient --eval '(emacs-everywhere)'"
+  Shift + Alt + e
+
 # Remote control spotify
 
 "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"

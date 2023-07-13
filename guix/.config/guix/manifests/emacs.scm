@@ -7,4 +7,11 @@
    "font-google-noto"
    "emacs-spacemacs-theme"
    "emacs-hl-todo"
-))
+
+   ;; Install emacs-everywhere dependencies
+   ;; https://github.com/tecosaur/emacs-everywhere/
+   "xclip"
+   "xdotool"
+   "xprop"
+   "xwininfo"
+   ))
