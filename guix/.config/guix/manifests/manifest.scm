@@ -45,6 +45,7 @@
                                 "hunspell-dict-en-gb"
 
                                 "autojump"
+                                "zoxide" ;; https://github.com/ajeetdsouza/zoxide
 
                                 "inkscape"
 
