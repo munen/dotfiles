@@ -112,4 +112,7 @@ dunst &
 # will be very small.
 export XCURSOR_PATH=/usr/share/icons/:/home/munen/.guix-profile/share/icons
 
+# Mount securefs
+kitty --hold -- bash -c "securefs mount -b ~/Dropbox/200ok/securefs /mnt/securefs"
+
 exec i3
