@@ -2,10 +2,10 @@
 # coding: utf-8
 
 # When using the proprietary nvidia driver:
-#CARD="nvidia_0"
+CARD="nvidia_0"
 
 # When using the OSS intel driver
-CARD="intel_backlight"
+# CARD="intel_backlight"
 
 # Get maximum brightness from `/sys` which is provided by the kernel
 def max_brightness
