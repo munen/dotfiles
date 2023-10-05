@@ -2,6 +2,9 @@
 # coding: utf-8
 
 # When using the proprietary nvidia driver:
+# NOTE: Nvidia can set brightness from 0..100. However, 10 will
+#       already be max brightness while 20 will be way less, again.
+#       It's kinda random. However, from 0..10 it seems solid.
 CARD="nvidia_0"
 
 # When using the OSS intel driver
@@ -17,22 +20,43 @@ def current_brightness
   `cat /sys/class/backlight/#{CARD}/brightness`.to_i
 end
 
-@max_brightness = max_brightness
+@max_brightness = case CARD
+                  when "nvidia_0"
+                    10
+                  else
+                    max_brightness
+                  end
 @brightness = current_brightness
 
 def brighter
-  @brightness = (@brightness * 1.1).to_i
+  @brightness = case CARD
+                when "nvidia_0"
+                  @brightness + 1
+                else
+                  (@brightness * 1.1).to_i
+                end
 
   # Failsafe
   @brightness = @max_brightness if(@brightness > @max_brightness)
 
   # Start with a little light
-  @brightness = 10 if (@brightness < 10)
+  @brightness = 10 if (@brightness < 10) and CARD != "nvidia_0"
 end
 
 def darker
-  @brightness = (@brightness * 0.9).to_i
-  @brightness = 0 if (@brightness < 5)
+  @brightness = case CARD
+                when "nvidia_0"
+                  @brightness - 1
+                else
+                  if (@brightness < 5)
+                    0
+                  else
+                    (@brightness * 0.9).to_i
+                  end
+                end
+  if @brightness == 0 and CARD == "nvidia_0"
+    `xset dpms force off`
+  end
 end
 
 # Note: This needs passwordless sudo privileges
@@ -42,7 +66,13 @@ def set_brightness
 end
 
 def get_status
-  puts "💡 #{(100 * @brightness / @max_brightness).to_i}%"
+  brightness = case CARD
+               when "nvidia_0"
+                 @brightness * 10
+               else
+                 (100 * @brightness / @max_brightness).to_i
+               end
+  puts "💡 #{brightness}%"
 end
 
 case ARGV[0]
