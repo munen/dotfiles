@@ -54,6 +54,9 @@ def darker
                     (@brightness * 0.9).to_i
                   end
                 end
+  # Even when set to 0, Nvidia will still have a backlight on. Hence,
+  # it's allowed to go below 0 and manually shut it off. When going
+  # above 0, again, it'll automatically switch on, again.
   if @brightness == -1 and CARD == "nvidia_0"
     `xset dpms force off`
   end
