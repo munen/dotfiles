@@ -54,7 +54,7 @@ def darker
                     (@brightness * 0.9).to_i
                   end
                 end
-  if @brightness == 0 and CARD == "nvidia_0"
+  if @brightness == -1 and CARD == "nvidia_0"
     `xset dpms force off`
   end
 end
