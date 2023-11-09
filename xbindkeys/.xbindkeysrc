@@ -5,7 +5,7 @@
 
 # Alternative to: "dmenu_run -fn arial"
 "rofi -combi-modi run,window -show combi -modi combi -matching fuzzy -levenshtein-sort"
-    Mod4 + d
+      Mod4 + d
 
 # Since the original brightness keys are not responding since
 # upgrading to Linux 5.16, bind F2 and F3 (which are also Decrease and
@@ -31,9 +31,11 @@
 "emacsclient -c -a=''"
     Mod4 + Tab
 
-# https://github.com/tecosaur/emacs-everywhere/
 "emacsclient --eval '(emacs-everywhere)'"
   Shift + Alt + e
+
+"emacsclient -c --eval '(start-whisper-recording)'"
+  Shift + Alt + r
 
 # Remote control spotify
 
