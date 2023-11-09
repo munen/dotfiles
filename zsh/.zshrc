@@ -263,12 +263,25 @@ export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 
 export XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/:/usr/share/glib-2.0/schemas:/var/lib/flatpak/exports/share:/home/munen/.local/share/flatpak/exports/share
 
+# Old school without `ssh-with-mfa`
 function ssh() {
   kitty @ set-colors foreground=#222
   kitty @ set-colors background=#BA8
   ~/.guix-profile/bin/ssh $@
   kitty @ set-colors --reset
 }
+
+# New school with `ssh-with-mfa`, because some people think that SSH
+# is only secure with MFA.
+function ssh() {
+  kitty @ set-colors foreground=#222
+  kitty @ set-colors background=#BA8
+  ~/bin/ssh-with-mfa $@
+  local code=$?
+  kitty @ set-colors --reset
+  return $code
+}
+
 
 __set-window-title() {
   # limit this to terminals, not consoles
