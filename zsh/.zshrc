@@ -273,7 +273,7 @@ function ssh() {
 
 # New school with `ssh-with-mfa`, because some people think that SSH
 # is only secure with MFA.
-function ssh() {
+function ssh-with-mfa() {
   kitty @ set-colors foreground=#222
   kitty @ set-colors background=#BA8
   ~/bin/ssh-with-mfa $@
