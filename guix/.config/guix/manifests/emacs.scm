@@ -6,6 +6,7 @@
    "xdotool"
    "xprop"
    "xwininfo"
+   "emacs-gnuplot"
    "mu"
    "emacs-spaceline"
    "font-fira-code"

@@ -37,6 +37,9 @@
 "emacsclient -c --eval '(start-whisper-recording)'"
   Shift + Alt + r
 
+"firefox http://192.168.0.96:8123/phils-dashboard/default_view"
+  Shift + Alt + h
+
 # Remote control spotify
 
 "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
