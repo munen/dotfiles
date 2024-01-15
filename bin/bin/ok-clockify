@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+# frozen_string_literal: true
+
+require 'open3'
+require 'json'
+
+# Runs the command and captures both stdout and stderr along with the exit status
+stdout_str, stderr_str, status = Open3.capture3('clockify-cli show current -j')
+exit_status = status.exitstatus
+
+if exit_status != 0
+  puts "" # For polybar, we need some output to 'erase' previous
+          # states.
+  return
+end
+
+# Filters out the unwanted "time entry was not found" line from stderr
+filtered_stderr = stderr_str.lines.reject { |line| line.include?("time entry was not found") }.join
+# If stderr has other content, handle it as needed
+puts filtered_stderr unless filtered_stderr.empty?
+
+
+# Parses the JSON from stdout and extracts the description fields
+begin
+  json_output = JSON.parse(stdout_str)
+rescue JSON::ParserError
+  puts "" # For polybar, we need some output to 'erase' previous
+          # states.
+  return # Return nil if JSON parsing fails
+end
+
+puts json_output.map { |entry| entry["description"] }
