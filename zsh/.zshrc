@@ -25,9 +25,9 @@ alias ag='ag -S --pager=less'
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 
-# History
-HISTSIZE=4000
-SAVEHIST=4000
+# History, near infinite
+HISTSIZE=1000000000
+SAVEHIST=1000000000
 
 plugins=(git bundler vi-mode)
 
