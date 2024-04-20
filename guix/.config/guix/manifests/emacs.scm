@@ -10,6 +10,7 @@
    "mu"
    "emacs-spaceline"
    "font-fira-code"
+   "fontconfig"
    "font-google-noto"
    "emacs-spacemacs-theme"
    "emacs-hl-todo"
