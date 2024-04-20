@@ -37,6 +37,9 @@
 "emacsclient -c --eval '(start-whisper-recording)'"
   Shift + Alt + r
 
+"emacsclient -c --eval '(gptel-menu)'"
+  Shift + Alt + C
+
 "firefox http://192.168.0.96:8123/phils-dashboard/default_view"
   Shift + Alt + h
 
