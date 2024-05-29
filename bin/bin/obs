@@ -1,5 +1,5 @@
 #!/bin/sh
 
-# QT_DEVICE_PIXEL_RATIO=2 /usr/bin/obs --enable-gpu $*
+QT_DEVICE_PIXEL_RATIO=2 /usr/bin/obs --enable-gpu $*
 
-QT_DEVICE_PIXEL_RATIO=2 flatpak run com.obsproject.Studio --enable-gpu $*
+# QT_DEVICE_PIXEL_RATIO=2 flatpak run com.obsproject.Studio --enable-gpu $*
