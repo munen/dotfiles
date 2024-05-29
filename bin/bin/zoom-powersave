@@ -1,0 +1,3 @@
+#!/bin/sh
+
+systemd-run --user --scope  -p MemoryMax=16G -p CPUQuota=50% /usr/bin/zoom
