@@ -15,8 +15,10 @@
                                 "kitty"
                                 "rofi"
 
+                                "peek"               ; Simple animated GIF screen recorder with an easy to use interface
+
                                 "keychain"
                                 "gnome-keyring"
 
-                                "xinput"            ; touchpad config
+                                "xinput"             ; touchpad config
                                 ))

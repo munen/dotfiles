@@ -5,7 +5,7 @@
 
 # Alternative to: "dmenu_run -fn arial"
 "rofi -combi-modi run,window -show combi -modi combi -matching fuzzy -levenshtein-sort"
-      Mod4 + d
+    Mod4 + d
 
 # Since the original brightness keys are not responding since
 # upgrading to Linux 5.16, bind F2 and F3 (which are also Decrease and
@@ -37,11 +37,14 @@
 "emacsclient -c --eval '(start-whisper-recording)'"
   Shift + Alt + r
 
-"emacsclient -c --eval '(gptel-menu)'"
-  Shift + Alt + C
+"emacsclient -c --eval '(gptel)'"
+  Shift + Alt + c
 
-"firefox http://192.168.0.96:8123/phils-dashboard/default_view"
+"firefox http://lambda-pi-alpha.tail9c061.ts.net:8123/"
   Shift + Alt + h
+
+# "firefox http://192.168.0.96:8123/phils-dashboard/default_view"
+#   Shift + Alt + h
 
 # Remote control spotify
 
