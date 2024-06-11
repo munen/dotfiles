@@ -18,7 +18,7 @@
 
                                 "keepassxc"
 
-                                "evince"
+                                ;; "evince" ; Does not open PS files and therefore does not work as mu3e Emacs print preview
 
                                 "stow"
 
