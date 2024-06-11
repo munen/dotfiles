@@ -1,10 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-# When using the proprietary nvidia driver:
-# NOTE: Nvidia can set brightness from 0..100. However, 10 will
-#       already be max brightness while 20 will be way less, again.
-#       It's kinda random. However, from 0..10 it seems solid.
 CARD="nvidia_0"
 
 # When using the OSS intel driver
@@ -20,44 +16,29 @@ def current_brightness
   `cat /sys/class/backlight/#{CARD}/brightness`.to_i
 end
 
-@max_brightness = case CARD
-                  when "nvidia_0"
-                    10
-                  else
-                    max_brightness
-                  end
+@max_brightness = max_brightness
 @brightness = current_brightness
 
 def brighter
-  @brightness = case CARD
-                when "nvidia_0"
-                  @brightness + 1
-                else
-                  (@brightness * 1.1).to_i
-                end
+  @brightness = (@brightness * 1.1).to_i
 
   # Failsafe
   @brightness = @max_brightness if(@brightness > @max_brightness)
 
   # Start with a little light
-  @brightness = 10 if (@brightness < 10) and CARD != "nvidia_0"
+  @brightness = 10 if (@brightness < 10)
 end
 
 def darker
-  @brightness = case CARD
-                when "nvidia_0"
-                  @brightness - 1
+  @brightness = if (@brightness < 5)
+                  0
                 else
-                  if (@brightness < 5)
-                    0
-                  else
-                    (@brightness * 0.9).to_i
-                  end
+                  (@brightness * 0.9).to_i
                 end
   # Even when set to 0, Nvidia will still have a backlight on. Hence,
   # it's allowed to go below 0 and manually shut it off. When going
   # above 0, again, it'll automatically switch on, again.
-  if @brightness == -1 and CARD == "nvidia_0"
+  if @brightness == 0 and CARD == "nvidia_0"
     `xset dpms force off`
   end
 end
@@ -69,12 +50,7 @@ def set_brightness
 end
 
 def get_status
-  brightness = case CARD
-               when "nvidia_0"
-                 @brightness * 10
-               else
-                 (100 * @brightness / @max_brightness).to_i
-               end
+  brightness = (100 * @brightness / @max_brightness).to_i
   puts "💡 #{brightness}%"
 end
 
