@@ -1,24 +1,15 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-`cd ~/Maildir`
+require 'open3'
 
-# Redirect the STDERR stream to the null device
-stderr_original = STDERR.dup
-STDERR.reopen(File::NULL)
-
-sent = `mu find from:alain date:today | sort | uniq`
-
-if $? == 0
-  sent_count = sent.split("\n").count
-else
-  sent_count = 0
+def count_results(command)
+  stdout, _, status = Open3.capture3(command)
+  return 0 if status.exitstatus != 0 || stdout.strip == 'no matches for search expression'
+  stdout.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '').split("\n").uniq.count
 end
 
-# Restore the original STDERR stream
-STDERR.reopen(stderr_original)
-
-received = `mu find to:alain date:today | sort | uniq`
-received_count = received.split("\n").count
+sent_count = count_results('mu find from:alain date:today')
+received_count = count_results('mu find to:alain date:today')
 
 puts "(S#{sent_count} . R#{received_count})"
