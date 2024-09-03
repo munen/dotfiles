@@ -1,4 +1,0 @@
-whisper_path: /home/munen/src/whisper.cpp
-whisper_model: small-q8_0
-whisper_threads: 8
-archive_path: /home/munen/Dropbox/voice_vault
