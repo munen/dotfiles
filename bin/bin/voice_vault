@@ -1,3 +1,3 @@
 #!/bin/bash
 
-~/src/200ok/voice_vault/voice_vault.rb
+~/src/200ok/voice_vault/voice_vault.rb $@
