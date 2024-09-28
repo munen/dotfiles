@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# firefox "https://www.icloud.com/#photos" &
+/usr/bin/google-chrome --app="https://www.icloud.com/photos"
