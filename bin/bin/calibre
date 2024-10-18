@@ -1,0 +1,3 @@
+#!/bin/sh
+
+firefox "https://lambda-pi-alpha.tail9c061.ts.net/" &
