@@ -340,3 +340,6 @@ set -o vi
 
 # Enable fzf keybindings
 source /usr/share/doc/fzf/examples/key-bindings.zsh
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

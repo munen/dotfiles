@@ -34,8 +34,8 @@
 "emacsclient --eval '(emacs-everywhere)'"
   Shift + Alt + e
 
-"emacsclient -c --eval '(start-whisper-recording)'"
-  Shift + Alt + r
+# "emacsclient -c --eval '(start-whisper-recording)'"
+#   Shift + Alt + r
 
 "emacsclient -c --eval '(gptel)'"
   Shift + Alt + c

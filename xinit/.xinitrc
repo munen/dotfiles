@@ -62,7 +62,7 @@ export SSH_AUTH_SOCK
 
 # Gnome HiDPI (e.g. firefox)
 export GDK_DPI_SCALE=0.5
-export GDK_SCALE=1
+export GDK_SCALE=2
 
 # Elementary (EFL)
 export ELM_SCALE=1

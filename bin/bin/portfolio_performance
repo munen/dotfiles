@@ -1,5 +1,6 @@
 #!/bin/sh
 
-sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+# sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+sudo update-alternatives --set java /usr/lib/jvm/temurin-21-jdk-amd64/bin/java
 /opt/portfolio_performance/PortfolioPerformance
 sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
