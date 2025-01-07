@@ -1,4 +1,4 @@
-﻿(specifications->manifest
+(specifications->manifest
  '("emacs"
    "emacs-org-auto-tangle"
    "emacs-undo-tree"
@@ -7,7 +7,9 @@
    "xprop"
    "xwininfo"
    "emacs-gnuplot"
+   "emacs-magit"
    "mu"
+   "emacs-spaceline"
    "emacs-spaceline"
    "font-fira-code"
    "fontconfig"
