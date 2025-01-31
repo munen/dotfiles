@@ -1,3 +1,3 @@
 #!/bin/sh
 
-/usr/bin/google-chrome --app="https://www.icloud.com/reminders"
+chrome --app="https://www.icloud.com/reminders"
