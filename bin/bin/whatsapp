@@ -2,4 +2,4 @@
 
 # flatpak run com.google.Chrome $@
 # /usr/bin/google-chrome --new-window web.whatsapp.com
-/usr/bin/google-chrome --app="https://web.whatsapp.com"
+chrome --app="https://web.whatsapp.com"
