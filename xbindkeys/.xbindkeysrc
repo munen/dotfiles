@@ -20,7 +20,7 @@
 "flameshot gui"
     Print
 
-"okshot -c"
+"take_screenshot.sh -c"
     Scroll_Lock
 
 "kitty"
@@ -45,6 +45,11 @@
 
 # "firefox http://192.168.0.96:8123/phils-dashboard/default_view"
 #   Shift + Alt + h
+
+# Remote control brain fm
+
+"brain-fm-toggle.sh"
+  F5
 
 # Remote control spotify
 
