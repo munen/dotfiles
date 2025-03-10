@@ -6,6 +6,7 @@
 # $3: The name of the blacklist folder (i.e. INBOX.blacklist)
 
 process_email() {
+  echo "Running process-new-mail at $(date)" >> /tmp/mail-debug.log
   # Find all new files (updated in the last 5min) in the inbox
   for file in `find ~/Maildir/$1/INBOX/new -type f  -cmin -5`
   do
