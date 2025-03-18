@@ -1,4 +1,4 @@
 #!/bin/bash
 
-# flatpak run com.google.Chrome $@
-/usr/bin/google-chrome --force-device-scale-factor=3 $@
+flatpak run com.google.Chrome $@
+# /usr/bin/google-chrome --force-device-scale-factor=3 $@
