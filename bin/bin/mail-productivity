@@ -5,8 +5,15 @@ require 'open3'
 
 def count_results(command)
   stdout, _, status = Open3.capture3(command)
-  return 0 if status.exitstatus != 0 || stdout.strip == 'no matches for search expression'
-  stdout.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '').split("\n").uniq.count
+  return 0 if status.exitstatus != 0
+
+  # Force encoding and handle invalid sequences
+  stdout = stdout.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+
+  # Now that we have valid UTF-8, we can do string operations
+  stdout_clean = stdout.strip
+  return 0 if stdout_clean == 'no matches for search expression'
+  stdout_clean.split("\n").uniq.count
 end
 
 sent_count = count_results('mu find from:alain date:today')
