@@ -97,6 +97,8 @@ xrandr --output eDP-1-1 --auto
 # Better sound quality for web conferencing
 ~/bin/pa-load-module-echo-cancel &
 
+export XDG_CURRENT_DESKTOP=Unity
+
 # Cloud storage
 dropbox start -i &
 # Automounter for removable media
