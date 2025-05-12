@@ -343,3 +343,6 @@ source /usr/share/doc/fzf/examples/key-bindings.zsh
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
+
+# This was needed for ansible-galaxy to find the installed cert.
+export SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
