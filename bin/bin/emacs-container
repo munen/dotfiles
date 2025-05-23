@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Default workspace directory
+DEFAULT_WORKSPACE="$HOME/src"
+
+# Use provided workspace directory or default
+WORKSPACE_DIR="${1:-$DEFAULT_WORKSPACE}"
+
+# Validate workspace directory exists
+if [ ! -d "$WORKSPACE_DIR" ]; then
+    echo "Error: Workspace directory '$WORKSPACE_DIR' does not exist."
+    exit 1
+fi
+
+# Extract guix packages
+PACKAGES=$(sed -n '/^#+begin_src fundamental :noweb-ref packages/,/^#+end_src/p' ~/.emacs.d/configuration.org | \
+           grep -v '^#+' | \
+           grep -v '^$' | \
+           sed 's/^[ \t]*//;s/[ \t]*$//;s/"//g' | \
+           tr '\n' ' ')
+
+export PULSE_UNIX_PATH="/run/user/$(id -u)/pulse/native"
+export PULSE_RUNTIME_PATH="/run/user/$(id -u)/pulse"
+
+guix shell --container --no-cwd --network \
+  --share="$WORKSPACE_DIR"=/workspace \
+  --share=/home/munen/.guix-profile/share/emacs/site-lisp \
+  --share=/home/munen/.emacs.d \
+  --share=/home/munen/dotfiles \
+  --share=/home/munen/dotfiles_private \
+  --share=/home/munen/src/200ok/ok-audio-transcription \
+  --share=/home/munen/.hunspell_personal \
+  --share=/usr/share/hunspell \
+  --share=/tmp/.X11-unix \
+  --share=/run/user/$(id -u)/pulse \
+  --preserve='^DISPLAY$' \
+  --preserve='^XAUTHORITY$' \
+  --preserve='^PULSE_UNIX_PATH$' \
+  --preserve='^PULSE_RUNTIME_PATH$' \
+  --expose="$XAUTHORITY" \
+  emacs-next bash coreutils git git-delta patch find hunspell curl nss-certs pulseaudio ffmpeg \
+  $PACKAGES -- emacs /workspace
