@@ -22,21 +22,38 @@ PACKAGES=$(sed -n '/^#+begin_src fundamental :noweb-ref packages/,/^#+end_src/p'
 export PULSE_UNIX_PATH="/run/user/$(id -u)/pulse/native"
 export PULSE_RUNTIME_PATH="/run/user/$(id -u)/pulse"
 
-guix shell --container --no-cwd --network \
+# Add SSH agent support
+export SSH_AUTH_SOCK="$SSH_AUTH_SOCK"
+
+# Workaround, otherwise the home directory in Guix is group writeable
+# which SSH does not approve of
+export CONTAINER_HOME="/tmp/container-home"
+mkdir -p "$CONTAINER_HOME"
+chmod g-w /tmp/container-home
+
+guix shell --container --no-cwd --network  \
   --share="$WORKSPACE_DIR"=/workspace \
-  --share=/home/munen/.guix-profile/share/emacs/site-lisp \
-  --share=/home/munen/.emacs.d \
-  --share=/home/munen/dotfiles \
-  --share=/home/munen/dotfiles_private \
-  --share=/home/munen/src/200ok/ok-audio-transcription \
-  --share=/home/munen/.hunspell_personal \
+  --share="$CONTAINER_HOME"=/home/munen \
+  --share=$HOME/.guix-profile/share/emacs/site-lisp \
+  --share=$HOME/.gitconfig \
+  --share=$HOME/.emacs.d \
+  --share=$HOME/.local \
+  --share=$HOME/.ssh \
+  --share=$HOME/dotfiles \
+  --share=$HOME/dotfiles_private \
+  --share=$HOME/src/gptel-clone \
+  --share=$HOME/src/200ok/ok-audio-transcription \
+  --share=$HOME/.hunspell_personal \
+  --share=$HOME/src/200ok/admin/src/org-ok-estimations \
   --share=/usr/share/hunspell \
   --share=/tmp/.X11-unix \
   --share=/run/user/$(id -u)/pulse \
+  --share="$SSH_AUTH_SOCK" \
+  --preserve='^SSH_AUTH_SOCK$' \
   --preserve='^DISPLAY$' \
   --preserve='^XAUTHORITY$' \
   --preserve='^PULSE_UNIX_PATH$' \
   --preserve='^PULSE_RUNTIME_PATH$' \
   --expose="$XAUTHORITY" \
-  emacs-next bash coreutils git git-delta patch find hunspell curl nss-certs pulseaudio ffmpeg \
+  emacs-next bash coreutils git git-delta patch findutils the-silver-searcher hunspell curl nss-certs pulseaudio ffmpeg openssh \
   $PACKAGES -- emacs /workspace
