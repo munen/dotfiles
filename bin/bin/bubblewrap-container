@@ -1,22 +1,45 @@
 #!/bin/bash
 
-# Check if workspace path is provided
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <workspace-path>"
-    echo "Example: $0 /path/to/my/project"
+# Usage: $0 <path_to_open_in_emacs_and_mount> [additional_path_to_mount_1 ...]
+# All provided paths will be bind-mounted into the container at their original absolute paths.
+# Emacs will be started with the first path as its argument.
+# All paths must exist.
+
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $0 <path_to_open_in_emacs_and_mount> [additional_path_to_mount_1 ...]"
+    echo "Example: $0 /path/to/my/projectA /path/to/another/projectB /path/to/a/file.txt"
+    echo "Error: At least one path argument is required."
     exit 1
 fi
 
-WORKSPACE_PATH="$1"
+BWRAP_BIND_OPTS=()
+EMACS_TARGET_PATH=""
+FIRST_PATH_SET=false # To correctly identify the first path for Emacs to open
 
-# Validate workspace path exists
-if [ ! -d "$WORKSPACE_PATH" ]; then
-    echo "Error: Workspace path '$WORKSPACE_PATH' does not exist or is not a directory"
-    exit 1
-fi
+for path_arg in "$@"; do
+    # Validate path exists and get absolute path (resolve symlinks, ., ..)
+    # realpath -e exits with error if path doesn't exist or cannot be resolved.
+    abs_path=$(realpath -e "$path_arg")
+    if [ $? -ne 0 ]; then
+        echo "Error: Path '$path_arg' is not valid or does not exist."
+        # realpath usually prints its own error, this adds context.
+        exit 1
+    fi
 
-# Get absolute path
-WORKSPACE_PATH=$(realpath "$WORKSPACE_PATH")
+    BWRAP_BIND_OPTS+=("--bind")
+    BWRAP_BIND_OPTS+=("$abs_path")
+    BWRAP_BIND_OPTS+=("$abs_path") # Mount source (host) and target (container) are the same absolute path
+
+    if ! $FIRST_PATH_SET; then
+        EMACS_TARGET_PATH="$abs_path" # Set the first valid absolute path as Emacs target
+        FIRST_PATH_SET=true
+    fi
+done
+
+# Construct the final emacs command arguments
+# EMACS_TARGET_PATH will be set because we checked $# -eq 0 and exited if true,
+# and realpath -e would have exited if the first path was invalid.
+EMACS_CMD_ARGS=("--debug-init" "$EMACS_TARGET_PATH")
 
 exec bwrap \
     --new-session \
@@ -39,7 +62,7 @@ exec bwrap \
     --tmpfs /etc/ssh/ssh_config.d \
     --ro-bind /opt /opt \
     --ro-bind /usr/share /usr/share \
-    --bind "$WORKSPACE_PATH" /workspace \
+    "${BWRAP_BIND_OPTS[@]}" \
     \
     --ro-bind "/gnu/store" "/gnu/store" \
     --ro-bind "$HOME/.guix-profile" "$HOME/.guix-profile" \
@@ -79,5 +102,5 @@ exec bwrap \
     --setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK" \
     --unsetenv EMACSLOADPATH \
     \
-    emacs --debug-init /workspace
-    # /home/munen/.guix-profile/bin/emacs --debug-init /workspace
+    emacs "${EMACS_CMD_ARGS[@]}"
+    # /home/munen/.guix-profile/bin/emacs "${EMACS_CMD_ARGS[@]}"
