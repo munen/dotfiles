@@ -39,7 +39,7 @@ done
 # Construct the final emacs command arguments
 # EMACS_TARGET_PATH will be set because we checked $# -eq 0 and exited if true,
 # and realpath -e would have exited if the first path was invalid.
-EMACS_CMD_ARGS=("--debug-init" "$EMACS_TARGET_PATH")
+EMACS_CMD_ARGS=("$EMACS_TARGET_PATH")
 
 exec bwrap \
     --new-session \
@@ -103,4 +103,3 @@ exec bwrap \
     --unsetenv EMACSLOADPATH \
     \
     emacs "${EMACS_CMD_ARGS[@]}"
-    # /home/munen/.guix-profile/bin/emacs "${EMACS_CMD_ARGS[@]}"
