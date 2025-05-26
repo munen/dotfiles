@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Check if workspace path is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <workspace-path>"
+    echo "Example: $0 /path/to/my/project"
+    exit 1
+fi
+
+WORKSPACE_PATH="$1"
+
+# Validate workspace path exists
+if [ ! -d "$WORKSPACE_PATH" ]; then
+    echo "Error: Workspace path '$WORKSPACE_PATH' does not exist or is not a directory"
+    exit 1
+fi
+
+# Get absolute path
+WORKSPACE_PATH=$(realpath "$WORKSPACE_PATH")
+
+exec bwrap \
+    --new-session \
+    --die-with-parent \
+    --unshare-user-try \
+    --unshare-pid \
+    \
+    --proc /proc \
+    --dev /dev \
+    --tmpfs /tmp \
+    --tmpfs /var \
+    --tmpfs /run \
+    \
+    --ro-bind /usr /usr \
+    --ro-bind /lib /lib \
+    --ro-bind /lib64 /lib64 \
+    --ro-bind /bin /bin \
+    --ro-bind /sbin /sbin \
+    --ro-bind /etc /etc \
+    --tmpfs /etc/ssh/ssh_config.d \
+    --ro-bind /opt /opt \
+    --ro-bind /usr/share /usr/share \
+    --bind "$WORKSPACE_PATH" /workspace \
+    \
+    --ro-bind "/gnu/store" "/gnu/store" \
+    --ro-bind "$HOME/.guix-profile" "$HOME/.guix-profile" \
+    --ro-bind "$HOME/.profile" "$HOME/.profile" \
+    --ro-bind "$HOME/.zshrc" "$HOME/.zshrc" \
+    --ro-bind "$HOME/.nvm" "$HOME/.nvm" \
+    --bind "$HOME/.m2" "$HOME/.m2" \
+    --bind "$HOME/.lein" "$HOME/.lein" \
+    --ro-bind "$HOME/.oh-my-zsh" "$HOME/.oh-my-zsh" \
+    --ro-bind "$HOME/.zshrc.d" "$HOME/.zshrc.d" \
+    --ro-bind "$HOME/.zsh_history" "$HOME/.zsh_history" \
+    --ro-bind "$HOME/.bashrc" "$HOME/.bashrc" \
+    --ro-bind "$HOME/.bash_history" "$HOME/.bash_history" \
+    --ro-bind "$HOME/.bash_profile" "$HOME/.bash_profile" \
+    --ro-bind "$HOME/.gitconfig" "$HOME/.gitconfig" \
+    --bind "$HOME/.emacs.d" "$HOME/.emacs.d" \
+    --bind "$HOME/.local" "$HOME/.local" \
+    --bind "$HOME/.ssh" "$HOME/.ssh" \
+    --bind "$HOME/dotfiles" "$HOME/dotfiles" \
+    --bind "$HOME/dotfiles_private" "$HOME/dotfiles_private" \
+    --bind "$HOME/src/gptel-clone" "$HOME/src/gptel-clone" \
+    --ro-bind "$HOME/src/200ok/ok-audio-transcription" "$HOME/src/200ok/ok-audio-transcription" \
+    --bind "$HOME/.hunspell_personal" "$HOME/.hunspell_personal" \
+    --ro-bind "$HOME/src/200ok/admin/src/org-ok-estimations" "$HOME/src/200ok/admin/src/org-ok-estimations" \
+    \
+    --bind /tmp/.X11-unix /tmp/.X11-unix \
+    --bind "/run/user/$(id -u)/pulse" "/run/user/$(id -u)/pulse" \
+    --setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK" \
+    \
+    --setenv DISPLAY "$DISPLAY" \
+    --setenv XAUTHORITY "$XAUTHORITY" \
+    --setenv PULSE_RUNTIME_PATH "/run/user/$(id -u)/pulse" \
+    --setenv HOME "$HOME" \
+    --setenv USER "$USER" \
+    --setenv SHELL "$SHELL" \
+    --setenv PATH "/usr/local/bin:/usr/bin:/bin" \
+    --setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK" \
+    --unsetenv EMACSLOADPATH \
+    \
+    emacs --debug-init /workspace
+    # /home/munen/.guix-profile/bin/emacs --debug-init /workspace
