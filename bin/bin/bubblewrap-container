@@ -67,6 +67,8 @@ exec bwrap \
     --ro-bind "/gnu/store" "/gnu/store" \
     --ro-bind "$HOME/.guix-profile" "$HOME/.guix-profile" \
     --ro-bind "$HOME/.profile" "$HOME/.profile" \
+    --ro-bind "$HOME/.authinfo" "$HOME/.authinfo" \
+    --ro-bind "$HOME/.authinfo.gpg" "$HOME/.authinfo.gpg" \
     --ro-bind "$HOME/.zshrc" "$HOME/.zshrc" \
     --ro-bind "$HOME/.nvm" "$HOME/.nvm" \
     --bind "$HOME/.m2" "$HOME/.m2" \
