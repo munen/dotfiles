@@ -1,0 +1,3 @@
+#!/bin/bash
+
+qOSTGRES_HOST="localhost" ./Downloads/Cursor-1.0.0-x86_64.AppImage --force-device-scale-factor=3 --disable-gpu $@
