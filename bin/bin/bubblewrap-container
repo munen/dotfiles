@@ -66,9 +66,13 @@ exec bwrap \
     \
     --ro-bind "/gnu/store" "/gnu/store" \
     --ro-bind "$HOME/.guix-profile" "$HOME/.guix-profile" \
+    --ro-bind "$HOME/bin" "$HOME/bin" \
     --ro-bind "$HOME/.profile" "$HOME/.profile" \
+    --bind "$HOME/.gnupg" "$HOME/.gnupg" \
     --ro-bind "$HOME/.authinfo" "$HOME/.authinfo" \
     --ro-bind "$HOME/.authinfo.gpg" "$HOME/.authinfo.gpg" \
+    --bind "/run/user/$(id -u)/pulse" "/run/user/$(id -u)/pulse" \
+    --bind "/run/user/$(id -u)/gnupg" "/run/user/$(id -u)/gnupg" \
     --ro-bind "$HOME/.zshrc" "$HOME/.zshrc" \
     --ro-bind "$HOME/.nvm" "$HOME/.nvm" \
     --bind "$HOME/.m2" "$HOME/.m2" \
@@ -91,6 +95,8 @@ exec bwrap \
     --ro-bind "$HOME/src/200ok/admin/src/org-ok-estimations" "$HOME/src/200ok/admin/src/org-ok-estimations" \
     \
     --bind /tmp/.X11-unix /tmp/.X11-unix \
+    --bind "$XAUTHORITY" "$XAUTHORITY" \
+    --dev-bind /dev/tty /dev/tty \
     --bind "/run/user/$(id -u)/pulse" "/run/user/$(id -u)/pulse" \
     --setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK" \
     \
