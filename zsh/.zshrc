@@ -1,3 +1,6 @@
+zmodload zsh/zprof
+# Amazon Q pre block. Keep at the top of this file.
+# [[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh"
 source ~/.profile
 
 # smart-case and use user
@@ -66,10 +69,6 @@ Darwin)
   # Customize to your needs...
   export PATH=/usr/local/bin/firefox:/Applications/MacVim.app/Contents/MacOS:/usr/local/bin:/Developer/usr/bin:opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin:/usr/local/mysql/bin:/usr/local/git/bin:/Applications/ImageMagick/bin:/usr/local/sbin:/usr/texbin:/Users/preek/.rvm/bin
 
-  # nvm
-  export NVM_DIR=~/.nvm
-  source $(brew --prefix nvm)/nvm.sh
-
   # JAVA
   #export JAVA_HOME=/Library/Java/JavaVirtualMachines/1.7.0u.jdk/Contents/Home
   export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_65.jdk/Contents/Home
@@ -112,13 +111,6 @@ Darwin)
   ;;
 Linux)
   alias ls='ls -F --color=auto'
-
-  # Activate NVM
-
-  if [[ -f ~/.nvm/nvm.sh ]]; then
-    source ~/.nvm/nvm.sh
-  fi
-
   ;;
 esac
 
@@ -234,25 +226,8 @@ for zshfile in ~/.zshrc.d/*[^~]; do
   source ${zshfile}
 done
 
-# automatically load `.nvmrc` files
+# automatically load `.nvmrc` files - optimized for lazy loading
 autoload -U add-zsh-hook
-load-nvmrc() {
-  local node_version="$(nvm version)"
-  local nvmrc_path="$(nvm_find_nvmrc)"
-
-  if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-    if [ "$nvmrc_node_version" = "N/A" ]; then
-      nvm install
-    elif [ "$nvmrc_node_version" != "$node_version" ]; then
-      nvm use
-    fi
-  elif [ "$node_version" != "$(nvm version default)" ]; then
-    echo "Reverting to nvm default version"
-    nvm use default
-  fi
-}
 
 if (( $+commands[nvm] )); then
   add-zsh-hook chpwd load-nvmrc
@@ -315,8 +290,14 @@ function ssh-with-mfa() {
 
 __set-window-title() {
   # limit this to terminals, not consoles
-  [[ $(tty) =~ ^/dev/pts ]] && \
-    kitty @ set-window-title $(basename $PWD)
+  if [[ $(tty) =~ ^/dev/pts ]]; then
+    local title=$(basename $PWD)
+    case "$TERM_PROGRAM" in
+      kitty)
+        kitty @ set-window-title "$title"
+        ;;
+    esac
+  fi
 }
 add-zsh-hook chpwd __set-window-title
 
@@ -341,8 +322,11 @@ set -o vi
 # Enable fzf keybindings
 source /usr/share/doc/fzf/examples/key-bindings.zsh
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
-
 # This was needed for ansible-galaxy to find the installed cert.
 export SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# Amazon Q post block. Keep at the bottom of this file.
+# [[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh"
+zprof
