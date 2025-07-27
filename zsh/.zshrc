@@ -1,4 +1,5 @@
-zmodload zsh/zprof
+# zmodload zsh/zprof
+
 # Amazon Q pre block. Keep at the top of this file.
 # [[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh"
 source ~/.profile
@@ -329,4 +330,5 @@ export SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
 
 # Amazon Q post block. Keep at the bottom of this file.
 # [[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh"
-zprof
+
+# zprof
