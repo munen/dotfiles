@@ -106,7 +106,7 @@ exec bwrap \
     --setenv HOME "$HOME" \
     --setenv USER "$USER" \
     --setenv SHELL "$SHELL" \
-    --setenv PATH "/usr/local/bin:/usr/bin:/bin" \
+    --setenv PATH "$HOME/.guix-profile/bin:/usr/local/bin:/usr/bin:/bin" \
     --setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK" \
     --unsetenv EMACSLOADPATH \
     \
