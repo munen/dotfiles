@@ -1,5 +1,5 @@
 #!/bin/bash
 
-flatpak run com.google.Chrome --force-device-scale-factor=3 $@
+flatpak run com.google.Chrome --force-device-scale-factor=3 --disable-gpu $@
 # flatpak run com.google.Chrome --disable-gpu $@
 # /usr/bin/google-chrome --force-device-scale-factor=3 $@
