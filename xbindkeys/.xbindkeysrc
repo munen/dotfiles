@@ -23,6 +23,7 @@
 "take_screenshot.sh -c"
     Scroll_Lock
 
+# "ghostty"
 "kitty"
     Mod4 + Return
 

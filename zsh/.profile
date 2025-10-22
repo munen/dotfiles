@@ -32,3 +32,6 @@ export GUIX_PROFILE="$HOME/.guix-profile"
 
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# SSH Agent
+eval "$(keychain --quiet --eval --agents ssh id_dsa id_rsa)"

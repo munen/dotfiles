@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "Error: No URL provided"
+    echo "Usage: $0 <youtube-url>"
+    exit 1
+fi
+
+url="$1"
+
+# just without subtitles
+# yt-dlp --cookies-from-browser firefox "$url" -o - | mpv -
+
+# With subtitles:
+
+# Attempt to download English subtitles
+yt-dlp --write-auto-subs --sub-langs "en" --convert-subs srt --skip-download "$url" -o /tmp/subs
+
+# Check if subtitles were downloaded
+if [ -f /tmp/subs.en.srt ]; then
+    yt-dlp --cookies-from-browser firefox "$url" -o - | mpv --sub-file=/tmp/subs.en.srt -
+    rm /tmp/subs.en.srt
+else
+    yt-dlp --cookies-from-browser firefox "$url" -o - | mpv -
+fi
