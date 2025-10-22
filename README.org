@@ -40,3 +40,23 @@ private dotfiles repository. It includes configuration for:
   flatpak install -y flathub com.google.Chrome
   flatpak install -y flathub com.obsproject.Studio
 #+end_src
+
+
+** Git LFS Required
+
+This repository uses [[https://git-lfs.com][Git Large File Storage (LFS)]] to manage large
+binaries (e.g., =deno=, =hugo=, AppImages, etc.).
+
+To properly check out these files:
+
+1. *Install Git LFS* (if you haven’t already):
+
+   #+begin_src shell
+   git lfs install
+   #+end_src
+
+2. *Clone the repo normally*—LFS hooks will auto-fetch large files:
+
+   #+begin_src shell
+   git clone https://github.com/munen/dotfiles.git
+   #+end_src
