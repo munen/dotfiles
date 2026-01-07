@@ -77,6 +77,8 @@ exec bwrap \
     --ro-bind "$HOME/.nvm" "$HOME/.nvm" \
     --bind "$HOME/.m2" "$HOME/.m2" \
     --bind "$HOME/.lein" "$HOME/.lein" \
+    --bind "$HOME/.claude" "$HOME/.claude" \
+    --bind "$HOME/.gemini" "$HOME/.gemini" \
     --ro-bind "$HOME/.oh-my-zsh" "$HOME/.oh-my-zsh" \
     --ro-bind "$HOME/.zshrc.d" "$HOME/.zshrc.d" \
     --ro-bind "$HOME/.zsh_history" "$HOME/.zsh_history" \

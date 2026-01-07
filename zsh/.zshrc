@@ -332,3 +332,6 @@ export SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
 # [[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh"
 
 # zprof
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# Note: NVM lazy-loading is handled by ~/.zshrc.d/lazy-nvm.zsh
