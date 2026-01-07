@@ -98,6 +98,8 @@ exec bwrap \
     \
     --bind /tmp/.X11-unix /tmp/.X11-unix \
     --bind "$XAUTHORITY" "$XAUTHORITY" \
+    --bind "/run/user/$(id -u)/bus" "/run/user/$(id -u)/bus" \
+    --setenv DBUS_SESSION_BUS_ADDRESS "$DBUS_SESSION_BUS_ADDRESS" \
     --dev-bind /dev/tty /dev/tty \
     --bind "/run/user/$(id -u)/pulse" "/run/user/$(id -u)/pulse" \
     --setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK" \
