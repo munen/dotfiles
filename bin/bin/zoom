@@ -3,4 +3,5 @@
 # use this script as actions for "Firefox > Preferences > Applications > zoommtg"
 
 # QT_SCALE_FACTOR=0.5 flatpak run us.zoom.Zoom $*
+# DO NOT USE FLATPACK ZOOM
 QT_SCALE_FACTOR=0.5 /usr/bin/zoom $*

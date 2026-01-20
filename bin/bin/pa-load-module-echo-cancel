@@ -1,5 +1,7 @@
 #!/bin/sh
 
+## OLDSCHOOL (using pulseaudio)
+
 # How to use this:
 # 1. Connect the devices you want to use (mic + speaker)
 # 2. Call this script
@@ -12,9 +14,20 @@
 # https://arunraghavan.net/2016/06/beamforming-in-pulseaudio/
 
 pactl unload-module module-echo-cancel
-# TODO: Test these settings with Phil and check out what works
 pactl load-module module-echo-cancel aec_method=webrtc aec_args="analog_gain_control=0\ digital_gain_control=0\ noise_suppression=1\ voice_detection=1"
 
 # Potentially good settings for the X1 Extreme internal mic
 # Untested and taken from https://wiki.archlinux.org/index.php/Lenovo_ThinkPad_X1_Extreme
 # pactl load-module module-echo-cancel use_master_format=1 aec_method=webrtc aec_args="analog_gain_control=0\ digital_gain_control=1 extended_filter=1 beamforming=1 mic_geometry=-0.0257,0,0,0.0257,0,0" source_name=echoCancel_source sink_name=echoCancel_sink
+
+## NEWSCHOOL (using pipewire)
+
+# Wait for PipeWire to be ready (loops until 'pactl info' succeeds)
+# until pactl info > /dev/null 2>&1; do
+#   sleep 1
+# done
+
+# # Once ready, start EasyEffects in the background
+# # We add PIPEWIRE_LATENCY="1024/48000" to relax the timing requirements
+# # 1024 samples at 48kHz is roughly 21ms latency, which eliminates crackling
+# PIPEWIRE_LATENCY="1024/48000" flatpak run com.github.wwmm.easyeffects --gapplication-service
