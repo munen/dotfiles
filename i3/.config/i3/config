@@ -195,6 +195,7 @@ bindsym $mod+r mode "resize"
 # }
 
 exec_always --no-startup-id $HOME/bin/launch_polybar.sh
+exec_always --no-startup-id parcellite
 # exec_always --no-startup-id $HOME/.guix-profile/bin/polybar
 exec_always --no-startup-id $HOME/.guix-profile/bin/xbindkeys
 
