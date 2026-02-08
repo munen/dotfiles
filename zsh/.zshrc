@@ -278,10 +278,11 @@ export XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/:/usr/share/g
 
 # Old school without `ssh-with-mfa`
 function ssh() {
-  kitty @ set-colors foreground=#222
-  kitty @ set-colors background=#BA8
+  # kitty +kitten themes Solarized\ Darcula
+  kitty +kitten themes Space\ Gray
+  # kitty +kitten themes Adapta\ Nokto\ Maia
   ~/.guix-profile/bin/ssh $@
-  kitty @ set-colors --reset
+  kitty +kitten themes Solarized\ Light
 }
 
 # New school with `ssh-with-mfa`, because some people think that SSH
@@ -342,3 +343,6 @@ export SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
 
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 # Note: NVM lazy-loading is handled by ~/.zshrc.d/lazy-nvm.zsh
+
+# opencode
+export PATH=/home/munen/.opencode/bin:$PATH

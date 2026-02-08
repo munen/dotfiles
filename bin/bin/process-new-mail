@@ -23,6 +23,10 @@ process_email() {
 
 process_email $1 $2 $3
 
-cd ~/Maildir/
-git add .
-git commit -m"Automated commit: $(date)"
+# Use flock to prevent concurrent git operations
+(
+  flock -x 9 || exit 1
+  cd ~/Maildir/
+  git add .
+  git commit -m"Automated commit: $(date)"
+) 9>/tmp/maildir-git.lock
