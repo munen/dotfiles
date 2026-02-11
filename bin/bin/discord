@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/opt/Discord/Discord --no-sandbox
+/usr/bin/discord --force-device-scale-factor=${DEVICE_SCALE_FACTOR:-2.5}
