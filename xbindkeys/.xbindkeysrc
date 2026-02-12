@@ -17,7 +17,7 @@
 "~/bin/brightness brighter"
     F3
 
-"flameshot gui"
+"flameshot gui --raw | ~/dotfiles/dropbox/flameshot-dropbox-upload.sh"
     Print
 
 "take_screenshot.sh -c"
