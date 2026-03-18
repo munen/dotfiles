@@ -32,6 +32,9 @@
 "emacsclient -c -a=''"
     Mod4 + Tab
 
+"cd ~/src/200ok/ok-voice/ && bb -m ok-voice.core"
+    F9
+
 "emacsclient --eval '(emacs-everywhere)'"
   Shift + Alt + e
 
