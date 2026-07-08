@@ -122,7 +122,9 @@ Linux)
   ;;
 esac
 
-export EDITOR='emacsclient -a="" -nw'
+export EDITOR="/home/munen/.guix-profile/bin/emacsclient -a='' -nw"
+export VISUAL="$EDITOR"
+export GIT_EDITOR="$EDITOR"
 
 alias sqlite3='sqlite3 -line'
 alias less='less -R' # Colors in Rails logs
