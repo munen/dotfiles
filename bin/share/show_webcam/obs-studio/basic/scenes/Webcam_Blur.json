@@ -1,0 +1,195 @@
+{
+  "current_scene": "Webcam Blur",
+  "current_program_scene": "Webcam Blur",
+  "scene_order": [
+    {
+      "name": "Webcam Blur"
+    }
+  ],
+  "name": "Webcam Blur",
+  "sources": [
+    {
+      "prev_ver": 503447555,
+      "name": "AI-blurred webcam",
+      "uuid": "befbd4ca-54fe-453f-8f24-5246769d07e2",
+      "id": "v4l2_input",
+      "versioned_id": "v4l2_input",
+      "settings": {
+        "device_id": "/dev/v4l/by-path/pci-0000:00:14.0-usb-0:8:1.0-video-index0",
+        "input": 0,
+        "pixelformat": 1196444237,
+        "resolution": 5497558139600,
+        "framerate": 4294967326,
+        "buffering": false,
+        "Brightness": 120,
+        "Contrast": 30,
+        "Hue": 0,
+        "White Balance, Automatic": true,
+        "Gamma": 120,
+        "Auto Exposure": 3,
+        "Exposure, Dynamic Framerate": false
+      },
+      "mixers": 0,
+      "sync": 0,
+      "flags": 0,
+      "volume": 1.0,
+      "balance": 0.5,
+      "enabled": true,
+      "muted": false,
+      "push-to-mute": false,
+      "push-to-mute-delay": 0,
+      "push-to-talk": false,
+      "push-to-talk-delay": 0,
+      "hotkeys": {},
+      "deinterlace_mode": 0,
+      "deinterlace_field_order": 0,
+      "monitoring_type": 0,
+      "private_settings": {},
+      "filters": [
+        {
+          "prev_ver": 503447555,
+          "name": "AI Background Blur",
+          "uuid": "f323e82a-dff4-4d12-9eb3-9063f6d80292",
+          "id": "background_removal",
+          "versioned_id": "background_removal",
+          "settings": {
+            "advanced": true,
+            "stop_when_source_is_inactive": true,
+            "enable_threshold": true,
+            "threshold": 0.35,
+            "contour_filter": 0.01,
+            "smooth_contour": 0.25,
+            "mask_expansion": 1,
+            "feather": 0.15,
+            "useGPU": "cpu",
+            "model_select": "models/rvm_mobilenetv3_fp32.with_runtime_opt.ort",
+            "mask_every_x_frames": 1,
+            "blur_background": 8,
+            "numThreads": 2,
+            "enable_focal_blur": false,
+            "temporal_smooth_factor": 0.85,
+            "enable_image_similarity": false,
+            "image_similarity_threshold": 35.0,
+            "blur_focus_point": 0.1,
+            "blur_focus_depth": 0.0
+          },
+          "mixers": 0,
+          "sync": 0,
+          "flags": 0,
+          "volume": 1.0,
+          "balance": 0.5,
+          "enabled": true,
+          "muted": false,
+          "push-to-mute": false,
+          "push-to-mute-delay": 0,
+          "push-to-talk": false,
+          "push-to-talk-delay": 0,
+          "hotkeys": {},
+          "deinterlace_mode": 0,
+          "deinterlace_field_order": 0,
+          "monitoring_type": 0,
+          "private_settings": {}
+        }
+      ]
+    },
+    {
+      "prev_ver": 503447555,
+      "name": "Webcam Blur",
+      "uuid": "36af287c-5b28-4f4a-82ce-b58e06fa6b9c",
+      "id": "scene",
+      "versioned_id": "scene",
+      "settings": {
+        "custom_size": false,
+        "id_counter": 1,
+        "items": [
+          {
+            "name": "AI-blurred webcam",
+            "source_uuid": "befbd4ca-54fe-453f-8f24-5246769d07e2",
+            "visible": true,
+            "locked": true,
+            "rot": 0.0,
+            "pos": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0
+            },
+            "align": 5,
+            "bounds_type": 0,
+            "bounds_align": 0,
+            "bounds_crop": false,
+            "bounds": {
+              "x": 0.0,
+              "y": 0.0
+            },
+            "crop_left": 0,
+            "crop_top": 0,
+            "crop_right": 0,
+            "crop_bottom": 0,
+            "id": 1,
+            "group_item_backup": false,
+            "scale_filter": "disable",
+            "blend_method": "default",
+            "blend_type": "normal",
+            "show_transition": {
+              "duration": 0
+            },
+            "hide_transition": {
+              "duration": 0
+            },
+            "private_settings": {}
+          }
+        ]
+      },
+      "mixers": 0,
+      "sync": 0,
+      "flags": 0,
+      "volume": 1.0,
+      "balance": 0.5,
+      "enabled": true,
+      "muted": false,
+      "push-to-mute": false,
+      "push-to-mute-delay": 0,
+      "push-to-talk": false,
+      "push-to-talk-delay": 0,
+      "hotkeys": {
+        "OBSBasic.SelectScene": [],
+        "libobs.show_scene_item.1": [],
+        "libobs.hide_scene_item.1": []
+      },
+      "deinterlace_mode": 0,
+      "deinterlace_field_order": 0,
+      "monitoring_type": 0,
+      "private_settings": {}
+    }
+  ],
+  "groups": [],
+  "quick_transitions": [
+    {
+      "name": "Cut",
+      "duration": 300,
+      "hotkeys": [],
+      "id": 1,
+      "fade_to_black": false
+    }
+  ],
+  "transitions": [],
+  "saved_projectors": [],
+  "current_transition": "Cut",
+  "transition_duration": 300,
+  "preview_locked": true,
+  "scaling_enabled": false,
+  "scaling_level": 0,
+  "scaling_off_x": 0.0,
+  "scaling_off_y": 0.0,
+  "virtual-camera": {
+    "type2": 4
+  },
+  "modules": {},
+  "resolution": {
+    "x": 1280,
+    "y": 720
+  }
+}
