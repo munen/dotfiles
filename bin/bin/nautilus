@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Nautilus 49 is excessively large with the session-wide 2x GTK scale.
+# Keep HiDPI scaling for other GTK applications, but run Nautilus at 1x.
+exec env GDK_SCALE=1 GDK_DPI_SCALE=1 /usr/bin/nautilus "$@"
