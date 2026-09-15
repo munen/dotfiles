@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LOCAL_PORT=8081
+DEVICE_PORT=8081
+CAM_USER="${CAM_USER:-admin}"
+CAM_PASS="${CAM_PASS:-admin}"
+STREAM=video
+VCAM=/dev/video10
+FPS=30
+RES_H=1080
+ROTATE="${ROTATE:-0}"
+MASK="${MASK:-0}"
+
+RUN="${XDG_RUNTIME_DIR:-/tmp}/iphone-cam"
+LOG="${XDG_CACHE_HOME:-$HOME/.cache}/iphone-cam"
+mkdir -p "$RUN" "$LOG"
+
+url() { printf 'http://%s:%s@127.0.0.1:%s/%s' "$CAM_USER" "$CAM_PASS" "$LOCAL_PORT" "$STREAM"; }
+
+alive() { [ -f "$RUN/$1.pid" ] && kill -0 "$(cat "$RUN/$1.pid")" 2>/dev/null; }
+
+die() { printf 'cam: %s\n' "$*" >&2; exit 1; }
+
+find_phone() { idevice_id -l 2>/dev/null | grep -q .; }
+
+usb_has_apple() {
+  local v
+  for v in /sys/bus/usb/devices/*/idVendor; do
+    [ "$(cat "$v" 2>/dev/null)" = 05ac ] && return 0
+  done
+  return 1
+}
+
+recover_device() {
+  if ! usb_has_apple; then
+    printf 'cam: no iPhone on the USB bus at all\n' >&2
+    printf 'cam: unplug/replug the cable (try another port or cable if it persists), then run cam again\n' >&2
+    return 1
+  fi
+  printf 'cam: iPhone is plugged in but usbmuxd lost it\n' >&2
+  [ -t 0 ] || { printf 'cam: run: sudo systemctl restart usbmuxd — then cam again\n' >&2; return 1; }
+  printf 'cam: restart usbmuxd now? [Y/n] '
+  local ans=""
+  read -r ans || ans=""
+  case "$ans" in n|N*) return 1 ;; esac
+  printf 'cam: restarting usbmuxd...\n' >&2
+  timeout 15 sudo systemctl restart usbmuxd 2>/dev/null || {
+    sudo systemctl kill --signal=SIGKILL usbmuxd 2>/dev/null || true
+    sleep 1
+    timeout 15 sudo systemctl start usbmuxd 2>/dev/null || true
+  }
+  local i
+  for i in 1 2 3 4 5 6 7 8 9 10; do
+    find_phone && { printf 'cam: phone is back\n' >&2; return 0; }
+    sleep 1
+  done
+  printf 'cam: restart did not help — unplug/replug the iPhone, then run cam again\n' >&2
+  return 1
+}
+
+start() {
+  alive ffmpeg && die "already running — 'cam stop' first"
+  find_phone || recover_device || die "no iPhone found"
+  idevicepair validate >/dev/null 2>&1 || die "not paired — run: idevicepair pair"
+  [ -e "$VCAM" ] || die "$VCAM missing — run: sudo modprobe v4l2loopback"
+
+  pkill -f "iproxy $LOCAL_PORT $DEVICE_PORT" 2>/dev/null || true
+  sleep 0.5
+  nohup iproxy "$LOCAL_PORT" "$DEVICE_PORT" >"$LOG/iproxy.log" 2>&1 </dev/null &
+  echo $! >"$RUN/iproxy.pid"
+  sleep 1
+  alive iproxy || die "iproxy failed — check $LOG/iproxy.log"
+
+  code=$(curl -s -m 3 -o /dev/null -w '%{http_code}' "http://${CAM_USER}:${CAM_PASS}@127.0.0.1:${LOCAL_PORT}/" || true)
+  [ "$code" = 200 ] || die "app not reachable over USB (http $code) — open IP Camera Lite on the iPhone and start the stream, then retry"
+
+  dims=$(ffprobe -v error -rw_timeout 8000000 -select_streams v:0 \
+    -show_entries stream=width,height -of csv=p=0 "$(url)" | head -n1 || true)
+  W=${dims%%,*}
+  H=${dims##*,}
+  [ "${W:-0}" -gt 0 ] 2>/dev/null && [ "${H:-0}" -gt 0 ] 2>/dev/null \
+    || die "could not probe stream — check 'cam log'"
+
+  case "$ROTATE" in
+    0|90|180|270) ;;
+    *) die "ROTATE must be 0, 90, 180 or 270" ;;
+  esac
+  case "$ROTATE" in
+    90|270) rw=$H rh=$W ;;
+    *) rw=$W rh=$H ;;
+  esac
+  tf=""
+  case "$ROTATE" in
+    90) tf="transpose=1" ;;
+    180) tf="transpose=1,transpose=1" ;;
+    270) tf="transpose=2" ;;
+  esac
+
+  read -r tw th < <(awk -v w="$rw" -v h="$rh" -v r="$RES_H" 'BEGIN {
+    if (h == 0) { print w, r; exit }
+    t = int(w * r / h + 0.5); if (t % 2) t++
+    if (t < 2) t = 2
+    print t, r
+  }')
+
+  v4l2loopback-ctl set-caps "$VCAM" "YUYV:${tw}x${th}@${FPS}"
+
+  parts=()
+  [ "$MASK" = 1 ] && parts+=("delogo=x=2:y=2:w=640:h=300")
+  [ -n "$tf" ] && parts+=("$tf")
+  parts+=("scale=${tw}:${th}")
+  vf=$(IFS=,; printf '%s' "${parts[*]}")
+
+  nohup ffmpeg -hide_banner -loglevel warning \
+    -fflags nobuffer -flags low_delay \
+    -i "$(url)" \
+    -vf "$vf" -r "$FPS" -pix_fmt yuyv422 -f v4l2 "$VCAM" \
+    >"$LOG/ffmpeg.log" 2>&1 </dev/null &
+  echo $! >"$RUN/ffmpeg.pid"
+  sleep 2
+  alive ffmpeg || { tail -n 20 "$LOG/ffmpeg.log" >&2; die "ffmpeg failed — see above / 'cam log'"; }
+
+  rotmsg=""
+  [ "$ROTATE" != 0 ] && rotmsg=" rotated ${ROTATE}°"
+  maskmsg=""
+  [ "$MASK" = 1 ] && maskmsg=" overlay masked"
+  printf 'started — pick "iPhone Cam" in your app (%sx%s @ %s fps%s%s)\n' "$tw" "$th" "$FPS" "$rotmsg" "$maskmsg"
+}
+
+stop() {
+  for p in ffmpeg iproxy; do
+    if [ -f "$RUN/$p.pid" ]; then
+      pid=$(cat "$RUN/$p.pid")
+      kill "$pid" 2>/dev/null || true
+      for _ in 1 2 3 4 5; do kill -0 "$pid" 2>/dev/null || break; sleep 0.3; done
+      kill -9 "$pid" 2>/dev/null || true
+      rm -f "$RUN/$p.pid"
+    fi
+  done
+  pkill -f "iproxy $LOCAL_PORT $DEVICE_PORT" 2>/dev/null || true
+  echo stopped
+}
+
+status() {
+  if idevice_id -l 2>/dev/null | grep -q .; then
+    echo "device:  $(idevice_id -l | head -n1)"
+  else
+    echo "device:  none"
+  fi
+  for p in iproxy ffmpeg; do
+    if alive "$p"; then
+      echo "$p:  running (pid $(cat "$RUN/$p.pid"))"
+    else
+      echo "$p:  stopped"
+    fi
+  done
+  if alive ffmpeg; then
+    code=$(curl -s -m 2 -o /dev/null -w '%{http_code}' "http://${CAM_USER}:${CAM_PASS}@127.0.0.1:${LOCAL_PORT}/" || true)
+    echo "tunnel:  http $code"
+    v4l2-ctl -d "$VCAM" -V 2>/dev/null | sed 's/^/         /'
+  fi
+}
+
+log() { tail -n 50 -f "$LOG/ffmpeg.log" "$LOG/iproxy.log"; }
+
+case "${1:-start}" in
+  start) start ;;
+  stop) stop ;;
+  status) status ;;
+  log) log ;;
+  *) die "usage: cam [start|stop|status|log]" ;;
+esac
