@@ -1,3 +1,8 @@
 #!/bin/sh
 
-flatpak run com.spotify.Client --disable-gpu
+# flatpak run com.spotify.Client --disable-gpu
+
+# GDK_SCALE=2 stacks on top of Xft.dpi=286 in Chromium/CEF, giving ~6x scaling.
+# --audio-api=pulseaudio: since ~1.2.86 the default backend plays silently
+# ("Can't play current song").
+exec env -u GDK_SCALE -u GDK_DPI_SCALE /usr/bin/spotify --audio-api=pulseaudio "$@"
