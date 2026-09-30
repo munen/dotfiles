@@ -1,6 +1,7 @@
 # Run this in a cronjob every minute
 # * * * * * XDG_RUNTIME_DIR=/run/user/$(id -u) ~/bin/low-battery-shutdown.sh >/dev/null 2>&1
 
+warning_threshold=25
 low_threshold=15
 critical_threshold=5
 timeout=59
@@ -36,6 +37,8 @@ do_shutdown() {
 
 if [ "$level" -lt $low_threshold ]; then
   notify-send -u critical "Battery level is low: $level%"
+elif [ "$level" -lt $warning_threshold ]; then
+  notify-send "Battery level is below 25%: $level%"
 fi
 
 if [ "$level" -lt $critical_threshold ]; then
