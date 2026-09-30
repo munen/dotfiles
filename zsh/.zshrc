@@ -348,3 +348,25 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 # opencode
 export PATH=/home/munen/.opencode/bin:$PATH
+
+opencode() {
+    command opencode --auto "$@"
+}
+
+codex() {
+    command codex --yolo "$@"
+}
+
+claude() {
+    command claude --dangerously-skip-permissions "$@"
+}
+
+# bun completions
+[ -s "/home/munen/.bun/_bun" ] && source "/home/munen/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# omp completions
+eval "$(omp completions zsh)"
