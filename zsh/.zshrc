@@ -370,3 +370,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # omp completions
 eval "$(omp completions zsh)"
+
+# TTS: gnustep say removed (hung waiting for GSSpeechServer); use espeak
+say() { espeak "$@"; }
