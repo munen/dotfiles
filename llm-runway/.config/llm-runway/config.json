@@ -1,0 +1,11 @@
+{
+  "notifications": {
+    "enabled": true,
+    "thresholds": {
+      "5h": 20,
+      "week": 15,
+      "month": 10
+    },
+    "repeatSeconds": 1800
+  }
+}
