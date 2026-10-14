@@ -8,7 +8,10 @@ CAM_PASS="${CAM_PASS:-admin}"
 STREAM=video
 VCAM=/dev/video10
 FPS=30
-RES_H=1080
+# Fixed device format: apps like Zoom keep $VCAM open and lock its caps, so
+# rotation is letterboxed into this frame instead of changing the caps.
+OUT_W=1920
+OUT_H=1080
 ROTATE="${ROTATE:-0}"
 MASK="${MASK:-0}"
 
@@ -86,10 +89,6 @@ start() {
     0|90|180|270) ;;
     *) die "ROTATE must be 0, 90, 180 or 270" ;;
   esac
-  case "$ROTATE" in
-    90|270) rw=$H rh=$W ;;
-    *) rw=$W rh=$H ;;
-  esac
   tf=""
   case "$ROTATE" in
     90) tf="transpose=1" ;;
@@ -97,19 +96,16 @@ start() {
     270) tf="transpose=2" ;;
   esac
 
-  read -r tw th < <(awk -v w="$rw" -v h="$rh" -v r="$RES_H" 'BEGIN {
-    if (h == 0) { print w, r; exit }
-    t = int(w * r / h + 0.5); if (t % 2) t++
-    if (t < 2) t = 2
-    print t, r
-  }')
-
-  v4l2loopback-ctl set-caps "$VCAM" "YUYV:${tw}x${th}@${FPS}"
+  caps="YUYV:${OUT_W}x${OUT_H}@${FPS}"
+  [ "$(v4l2loopback-ctl get-caps "$VCAM" 2>/dev/null)" = "$caps/1" ] \
+    || v4l2loopback-ctl set-caps "$VCAM" "$caps" \
+    || die "cannot set $VCAM to $caps — quit apps holding it: $(fuser "$VCAM" 2>/dev/null)"
 
   parts=()
   [ "$MASK" = 1 ] && parts+=("delogo=x=2:y=2:w=640:h=300")
   [ -n "$tf" ] && parts+=("$tf")
-  parts+=("scale=${tw}:${th}")
+  parts+=("scale=${OUT_W}:${OUT_H}:force_original_aspect_ratio=decrease:force_divisible_by=2")
+  parts+=("pad=${OUT_W}:${OUT_H}:(ow-iw)/2:(oh-ih)/2")
   vf=$(IFS=,; printf '%s' "${parts[*]}")
 
   nohup ffmpeg -hide_banner -loglevel warning \
@@ -125,7 +121,7 @@ start() {
   [ "$ROTATE" != 0 ] && rotmsg=" rotated ${ROTATE}°"
   maskmsg=""
   [ "$MASK" = 1 ] && maskmsg=" overlay masked"
-  printf 'started — pick "iPhone Cam" in your app (%sx%s @ %s fps%s%s)\n' "$tw" "$th" "$FPS" "$rotmsg" "$maskmsg"
+  printf 'started — pick "iPhone Cam" in your app (%sx%s @ %s fps%s%s)\n' "$OUT_W" "$OUT_H" "$FPS" "$rotmsg" "$maskmsg"
 }
 
 stop() {
