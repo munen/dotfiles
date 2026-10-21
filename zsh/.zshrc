@@ -373,3 +373,6 @@ eval "$(omp completions zsh)"
 
 # TTS: gnustep say removed (hung waiting for GSSpeechServer); use espeak
 say() { espeak "$@"; }
+
+# Hindsight shared agent memory token (HINDSIGHT_API_TOKEN) for Claude Code, Codex, OpenCode, omp
+[ -r "$HOME/.config/hindsight/env" ] && { set -a; . "$HOME/.config/hindsight/env"; set +a; export HINDSIGHT_API_KEY="$HINDSIGHT_API_TOKEN"; }  # hindsight CLI reads HINDSIGHT_API_KEY
