@@ -7,11 +7,12 @@ CAM_USER="${CAM_USER:-admin}"
 CAM_PASS="${CAM_PASS:-admin}"
 STREAM=video
 VCAM=/dev/video10
-FPS=30
+FPS="${FPS:-25}"
 # Fixed device format: apps like Zoom keep $VCAM open and lock its caps, so
 # rotation is letterboxed into this frame instead of changing the caps.
-OUT_W=1920
-OUT_H=1080
+# Match the resolution set in the iPhone app; 720p keeps CPU use low.
+OUT_W="${OUT_W:-1280}"
+OUT_H="${OUT_H:-720}"
 ROTATE="${ROTATE:-0}"
 MASK="${MASK:-0}"
 
@@ -108,10 +109,13 @@ start() {
   parts+=("pad=${OUT_W}:${OUT_H}:(ow-iw)/2:(oh-ih)/2")
   vf=$(IFS=,; printf '%s' "${parts[*]}")
 
+  # fast_bilinear for every scaler, including the one ffmpeg inserts after pad:
+  # with the default bicubic path the yuvj420p -> yuyv422 conversion is the
+  # most expensive step, even when nothing is resized.
   nohup ffmpeg -hide_banner -loglevel warning \
     -fflags nobuffer -flags low_delay \
     -i "$(url)" \
-    -vf "$vf" -r "$FPS" -pix_fmt yuyv422 -f v4l2 "$VCAM" \
+    -sws_flags fast_bilinear -vf "$vf" -r "$FPS" -pix_fmt yuyv422 -f v4l2 "$VCAM" \
     >"$LOG/ffmpeg.log" 2>&1 </dev/null &
   echo $! >"$RUN/ffmpeg.pid"
   sleep 2
