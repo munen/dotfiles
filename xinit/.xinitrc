@@ -114,10 +114,10 @@ dunst &
 # will be very small.
 export XCURSOR_PATH=/usr/share/icons/:/home/munen/.guix-profile/share/icons
 
+# Hindsight shared agent memory token (HINDSIGHT_API_TOKEN) for Claude Code, Codex, OpenCode, omp
+[ -r "$HOME/.config/hindsight/env" ] && { set -a; . "$HOME/.config/hindsight/env"; set +a; }
+
 # Mount securefs
 kitty --hold -- bash -c "securefs mount -b ~/securefs /mnt/securefs" &
 
 exec i3
-
-# Hindsight shared agent memory token (HINDSIGHT_API_TOKEN) for Claude Code, Codex, OpenCode, omp
-[ -r "$HOME/.config/hindsight/env" ] && { set -a; . "$HOME/.config/hindsight/env"; set +a; }
