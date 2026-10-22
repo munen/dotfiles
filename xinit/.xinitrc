@@ -99,8 +99,6 @@ xrandr --output eDP-1-1 --auto
 
 export XDG_CURRENT_DESKTOP=Unity
 
-# Cloud storage
-dropbox start -i &
 # Automounter for removable media
 udiskie --automount --notify --tray &
 # xinput --set-prop "MX Vertical Mouse" "libinput Accel Speed" 0
