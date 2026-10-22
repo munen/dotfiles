@@ -1,0 +1,51 @@
+#!/bin/bash
+# Start Paseo with a native window frame.
+#
+# Paseo uses a frameless window on Linux. Electron reserves a 24 px shadow
+# area around it, which i3 (no _GTK_FRAME_EXTENTS support, no compositor)
+# shows as an opaque grey border. This wrapper extracts the AppImage once per
+# version, patches `frame: false` to `frame: true` in app.asar and runs the
+# result. APPIMAGE points at the original file so the auto-updater keeps
+# replacing it; the next start then patches the new version.
+
+set -euo pipefail
+
+appimage="${PASEO_APPIMAGE:-$HOME/.local/share/paseo/Paseo.AppImage}"
+cache_root="${XDG_CACHE_HOME:-$HOME/.cache}/paseo-native-frame"
+key="$(stat -c '%s-%Y' "$appimage")"
+dir="$cache_root/$key"
+
+warn() {
+  echo "paseo: $*" >&2
+  command -v notify-send >/dev/null && notify-send "Paseo" "$*" || true
+}
+
+if [ ! -x "$dir/squashfs-root/AppRun" ]; then
+  tmp="$(mktemp -d "$cache_root.tmp.XXXXXX")"
+  trap 'rm -rf "$tmp"' EXIT
+  (cd "$tmp" && "$appimage" --appimage-extract >/dev/null)
+
+  if ! python3 -I - "$tmp/squashfs-root/resources/app.asar" <<'EOF'
+import sys
+
+path = sys.argv[1]
+old = b"frame: false,\n        autoHideMenuBar: true"
+new = b"frame: true, \n        autoHideMenuBar: true"
+data = open(path, "rb").read()
+if data.count(old) != 1:
+    sys.exit(1)
+open(path, "wb").write(data.replace(old, new))
+EOF
+  then
+    warn "native-frame patch no longer applies; starting unpatched Paseo"
+    rm -rf "$tmp"
+    exec "$appimage" "$@"
+  fi
+
+  rm -rf "$cache_root"
+  mkdir -p "$cache_root"
+  mv "$tmp" "$dir"
+  trap - EXIT
+fi
+
+APPIMAGE="$appimage" exec "$dir/squashfs-root/AppRun" "$@"
