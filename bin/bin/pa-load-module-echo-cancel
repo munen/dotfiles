@@ -13,8 +13,35 @@
 # https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Modules/#module-echo-cancel
 # https://arunraghavan.net/2016/06/beamforming-in-pulseaudio/
 
-pactl unload-module module-echo-cancel
-pactl load-module module-echo-cancel aec_method=webrtc aec_args="analog_gain_control=0\ digital_gain_control=0\ noise_suppression=1\ voice_detection=1"
+until pactl info > /dev/null 2>&1; do
+  sleep 1
+done
+
+# Filter the selected default speaker (or the one already filtered, if
+# the echo cancel sink is still the default)
+master=$(pactl get-default-sink)
+if [ "$master" = echoCancel_sink ]; then
+  master=$(pactl list short modules | grep -o 'sink_master=[^ ]*' | cut -d= -f2)
+fi
+
+pactl unload-module module-echo-cancel 2> /dev/null
+# Don't pause music whenever a call stream (e.g. Zoom) is open
+pactl unload-module module-role-cork 2> /dev/null
+
+# use_master_format keeps the speaker's stereo/48kHz format (the default
+# is mono 32kHz). Fixed names let Zoom remember the devices across reloads.
+pactl load-module module-echo-cancel use_master_format=1 \
+  sink_master="$master" sink_name=echoCancel_sink source_name=echoCancel_source \
+  sink_properties=device.description=Echo-Cancel-Speaker \
+  source_properties=device.description=Echo-Cancel-Mic \
+  aec_method=webrtc aec_args="analog_gain_control=0\ digital_gain_control=0\ noise_suppression=1\ voice_detection=1"
+
+# Everything must play through the filter, or it cannot cancel it
+pactl set-default-sink echoCancel_sink
+pactl set-default-source echoCancel_source
+pactl list short sink-inputs | awk '{print $1}' | while read -r input; do
+  pactl move-sink-input "$input" echoCancel_sink 2> /dev/null
+done
 
 # Potentially good settings for the X1 Extreme internal mic
 # Untested and taken from https://wiki.archlinux.org/index.php/Lenovo_ThinkPad_X1_Extreme
