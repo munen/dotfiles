@@ -7,7 +7,7 @@ CAM_USER="${CAM_USER:-admin}"
 CAM_PASS="${CAM_PASS:-admin}"
 STREAM=video
 VCAM=/dev/video10
-FPS="${FPS:-25}"
+FPS="${FPS:-30}"
 # Fixed device format: apps like Zoom keep $VCAM open and lock its caps, so
 # rotation is letterboxed into this frame instead of changing the caps.
 # Match the resolution set in the iPhone app; 720p keeps CPU use low.
@@ -15,6 +15,11 @@ OUT_W="${OUT_W:-1280}"
 OUT_H="${OUT_H:-720}"
 ROTATE="${ROTATE:-0}"
 MASK="${MASK:-0}"
+# IP Camera Lite has no white balance setting and its picture runs warm.
+# Per-channel gains, measured on a white window frame; WB_R=1 WB_B=1 skips
+# the RGB stage and roughly halves ffmpeg's CPU use.
+WB_R="${WB_R:-0.94}"
+WB_B="${WB_B:-1.06}"
 
 RUN="${XDG_RUNTIME_DIR:-/tmp}/iphone-cam"
 LOG="${XDG_CACHE_HOME:-$HOME/.cache}/iphone-cam"
@@ -90,32 +95,48 @@ start() {
     0|90|180|270) ;;
     *) die "ROTATE must be 0, 90, 180 or 270" ;;
   esac
-  tf=""
+  # Scale before rotating so the rotation runs on the small frame. For 90/270
+  # scale into the swapped box; the transpose then makes it fit OUT_WxOUT_H.
+  bw=$OUT_W bh=$OUT_H tf=""
   case "$ROTATE" in
-    90) tf="transpose=1" ;;
-    180) tf="transpose=1,transpose=1" ;;
-    270) tf="transpose=2" ;;
+    90) tf="transpose=1" bw=$OUT_H bh=$OUT_W ;;
+    180) tf="hflip,vflip" ;;
+    270) tf="transpose=2" bw=$OUT_H bh=$OUT_W ;;
   esac
+
+  if [ "$W" -gt "$bw" ] || [ "$H" -gt "$bh" ]; then
+    printf 'cam: phone sends %sx%s — set IP Camera Lite to %sx%s for less latency\n' \
+      "$W" "$H" "$bw" "$bh" >&2
+  fi
 
   caps="YUYV:${OUT_W}x${OUT_H}@${FPS}"
   [ "$(v4l2loopback-ctl get-caps "$VCAM" 2>/dev/null)" = "$caps/1" ] \
     || v4l2loopback-ctl set-caps "$VCAM" "$caps" \
     || die "cannot set $VCAM to $caps — quit apps holding it: $(fuser "$VCAM" 2>/dev/null)"
 
+  # The MJPEG stream is full range (yuvj420p); consumers read YUYV as limited
+  # range BT.601. Convert explicitly — the auto-inserted scaler got it wrong
+  # and pushed the picture towards red.
+  scale="scale=${bw}:${bh}:force_original_aspect_ratio=decrease:force_divisible_by=2:in_range=pc"
   parts=()
   [ "$MASK" = 1 ] && parts+=("delogo=x=2:y=2:w=640:h=300")
+  if [ "$WB_R" = 1 ] && [ "$WB_B" = 1 ]; then
+    parts+=("$scale:out_range=tv")
+  else
+    parts+=("$scale" "format=gbrp" "colorchannelmixer=rr=${WB_R}:bb=${WB_B}")
+  fi
   [ -n "$tf" ] && parts+=("$tf")
-  parts+=("scale=${OUT_W}:${OUT_H}:force_original_aspect_ratio=decrease:force_divisible_by=2")
   parts+=("pad=${OUT_W}:${OUT_H}:(ow-iw)/2:(oh-ih)/2")
+  parts+=("scale=out_range=tv:out_color_matrix=bt601")
   vf=$(IFS=,; printf '%s' "${parts[*]}")
 
-  # fast_bilinear for every scaler, including the one ffmpeg inserts after pad:
-  # with the default bicubic path the yuvj420p -> yuyv422 conversion is the
-  # most expensive step, even when nothing is resized.
+  # fast_bilinear for every scaler: with the default bicubic path the colour
+  # conversion to yuyv422 is the most expensive step. The stream carries no
+  # timestamps; pass frames through 1:1 instead of resampling to a rate.
   nohup ffmpeg -hide_banner -loglevel warning \
     -fflags nobuffer -flags low_delay \
     -i "$(url)" \
-    -sws_flags fast_bilinear -vf "$vf" -r "$FPS" -pix_fmt yuyv422 -f v4l2 "$VCAM" \
+    -sws_flags fast_bilinear -vf "$vf" -fps_mode passthrough -pix_fmt yuyv422 -f v4l2 "$VCAM" \
     >"$LOG/ffmpeg.log" 2>&1 </dev/null &
   echo $! >"$RUN/ffmpeg.pid"
   sleep 2
@@ -123,9 +144,11 @@ start() {
 
   rotmsg=""
   [ "$ROTATE" != 0 ] && rotmsg=" rotated ${ROTATE}°"
+  wbmsg=""
+  [ "$WB_R" = 1 ] && [ "$WB_B" = 1 ] || wbmsg=" white balance R${WB_R}/B${WB_B}"
   maskmsg=""
   [ "$MASK" = 1 ] && maskmsg=" overlay masked"
-  printf 'started — pick "iPhone Cam" in your app (%sx%s @ %s fps%s%s)\n' "$OUT_W" "$OUT_H" "$FPS" "$rotmsg" "$maskmsg"
+  printf 'started — pick "iPhone Cam" in your app (%sx%s @ %s fps%s%s%s)\n' "$OUT_W" "$OUT_H" "$FPS" "$rotmsg" "$wbmsg" "$maskmsg"
 }
 
 stop() {
