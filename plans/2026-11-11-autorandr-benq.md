@@ -34,3 +34,14 @@ the NVIDIA driver rejected the screen resize with `BadMatch` on
 (Xorg, Chromium, Zoom). munen only needs one screen, so `docked` is now the
 BenQ alone. With a single output active at a time, i3 moves every workspace to
 it, so the workspace-to-output pins were dropped.
+
+## Change: hotplug through X events
+A real unplug/replug test showed no drm uevents at all (nvidia-drm without
+modeset), so autorandr's udev rule never fires. X does report
+`XRROutputChangeNotifyEvent` (RR_Connected/RR_Disconnected).
+`bin/autorandr-listen` (started from `.xinitrc`) watches those via
+`xev -root -event randr`, debounces, and loads `docked` or `mobile`. After a
+replug X still lists the BenQ as active, so the monitor stays dark until a real
+modeset: the listener toggles the BenQ to 70 Hz and back to 60 Hz. If no screen
+is active afterwards, it falls back to the X1. Log:
+`~/.cache/autorandr-listen.log`.

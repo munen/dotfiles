@@ -1,0 +1,54 @@
+#!/bin/bash
+# Apply the matching autorandr profile whenever X reports an output change.
+# Needed because nvidia-drm runs without modeset, so the kernel sends no
+# hotplug uevents and autorandr's udev rule never fires.
+#
+# Profiles (~/.config/autorandr): docked = BenQ (DP-1) alone at 5K,
+# mobile = X1 panel (DP-2) alone. Started from ~/.xinitrc.
+
+LOG="${XDG_CACHE_HOME:-$HOME/.cache}/autorandr-listen.log"
+BENQ=DP-1
+X1=DP-2
+
+log() { echo "$(date '+%F %T') $*" >>"$LOG"; }
+
+# Replace a running instance.
+pgrep -u "$UID" -fx '/bin/bash .*/autorandr-listen' | grep -vx "$$" | xargs -r kill 2>/dev/null
+pkill -u "$UID" -f 'xev -root -event randr' 2>/dev/null
+
+connected() { xrandr --query | grep -q "^$1 connected"; }
+active_count() { xrandr --listmonitors | awk 'NR==1 {print $2}'; }
+
+apply() {
+  if connected "$BENQ"; then
+    log "BenQ connected: loading docked"
+    autorandr --load docked --force >>"$LOG" 2>&1
+    # After a replug X often still lists the BenQ as active, so the load
+    # changes nothing and the monitor stays dark. A rate change forces a
+    # real modeset without resizing the framebuffer.
+    xrandr --output "$BENQ" --mode 5120x2880 --rate 70 >>"$LOG" 2>&1
+    sleep 1
+    xrandr --output "$BENQ" --mode 5120x2880 --rate 60 >>"$LOG" 2>&1
+  else
+    log "BenQ gone: loading mobile"
+    autorandr --load mobile --force >>"$LOG" 2>&1
+  fi
+
+  # Never leave the session without a screen.
+  if [ "$(active_count)" = 0 ] || ! xrandr --listmonitors | grep -q "$BENQ\|$X1"; then
+    log "no active screen: falling back to the X1"
+    xrandr --output "$BENQ" --off --output "$X1" --auto --primary >>"$LOG" 2>&1
+  fi
+  log "active: $(xrandr --listmonitors | tail -n +2 | awk '{print $NF}' | paste -sd' ')"
+}
+
+log "started"
+xev -root -event randr |
+  grep --line-buffered 'XRROutputChangeNotifyEvent' |
+  while read -r _; do
+    # Debounce: one plug produces several events; wait until they stop.
+    while read -r -t 2 _; do :; done
+    apply
+    # Our own xrandr calls emit events too; drop them so we don't loop.
+    while read -r -t 3 _; do :; done
+  done
