@@ -66,7 +66,7 @@ To properly check out these files:
 Two autorandr profiles in =autorandr/= (=stow autorandr=; needs the
 Debian =autorandr= package):
 
-- =docked= :: BenQ MA270S (DP-1) alone at 5120x2880, X1 panel off
+- =docked= :: BenQ MA270S (DP-1) alone at 3840x2160, X1 panel off
 - =mobile= :: X1 panel (DP-2) alone
 
 =nvidia-drm= runs without modeset, so the kernel sends no hotplug events

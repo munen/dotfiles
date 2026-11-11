@@ -3,7 +3,7 @@
 # Needed because nvidia-drm runs without modeset, so the kernel sends no
 # hotplug uevents and autorandr's udev rule never fires.
 #
-# Profiles (~/.config/autorandr): docked = BenQ (DP-1) alone at 5K,
+# Profiles (~/.config/autorandr): docked = BenQ (DP-1) alone at 4K,
 # mobile = X1 panel (DP-2) alone. Started from ~/.xinitrc.
 
 LOG="${XDG_CACHE_HOME:-$HOME/.cache}/autorandr-listen.log"
@@ -26,9 +26,9 @@ apply() {
     # After a replug X often still lists the BenQ as active, so the load
     # changes nothing and the monitor stays dark. A rate change forces a
     # real modeset without resizing the framebuffer.
-    xrandr --output "$BENQ" --mode 5120x2880 --rate 70 >>"$LOG" 2>&1
+    xrandr --output "$BENQ" --mode 3840x2160 --rate 50 >>"$LOG" 2>&1
     sleep 1
-    xrandr --output "$BENQ" --mode 5120x2880 --rate 60 >>"$LOG" 2>&1
+    xrandr --output "$BENQ" --mode 3840x2160 --rate 60 >>"$LOG" 2>&1
   else
     log "BenQ gone: loading mobile"
     autorandr --load mobile --force >>"$LOG" 2>&1

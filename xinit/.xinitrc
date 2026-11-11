@@ -91,7 +91,7 @@ xset fp rehash
 # we understand it. Maybe it's the other way round, no clue. This does
 # the proxying:
 xrandr --setprovideroutputsource modesetting NVIDIA-0
-# Then apply the matching autorandr profile (docked: BenQ 5K, mobile: X1)
+# Then apply the matching autorandr profile (docked: BenQ 4K, mobile: X1)
 autorandr --change --default mobile
 # Watch for plug/unplug: the kernel sends no hotplug events (no nvidia-drm modeset)
 ~/bin/autorandr-listen &
