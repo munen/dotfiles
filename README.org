@@ -60,3 +60,20 @@ To properly check out these files:
    #+begin_src shell
    git clone https://github.com/munen/dotfiles.git
    #+end_src
+
+** Displays (autorandr)
+
+Two autorandr profiles in =autorandr/= (=stow autorandr=; needs the
+Debian =autorandr= package):
+
+- =docked= :: BenQ MA270S (DP-1) alone at 5120x2880, X1 panel off
+- =mobile= :: X1 panel (DP-2) alone
+
+=nvidia-drm= runs without modeset, so the kernel sends no hotplug events
+and autorandr's udev rule never fires. =bin/autorandr-listen= (started
+from =.xinitrc=) watches X RandR events instead and loads the matching
+profile on plug and unplug. Log: =~/.cache/autorandr-listen.log=.
+Design notes: =plans/2026-11-11-autorandr-benq.md=.
+
+If a screen stays dark: =Ctrl+Alt+F2=, log in, run
+=DISPLAY=:0 autorandr --load mobile=.

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Relaunch polybar so every active output gets a bar.
+"$HOME/bin/launch_polybar.sh" >/dev/null 2>&1 &
