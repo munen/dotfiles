@@ -6,6 +6,16 @@ CARD="nvidia_0"
 # When using the OSS intel driver
 # CARD="intel_backlight"
 
+# External monitors are controlled via DDC/CI with `ddcutil` (VCP code
+# 0x10 = brightness). `-d 1` is the first DDC capable display; laptop
+# panels don't speak DDC/CI, so that is the external monitor.
+DDC_DISPLAY = "1"
+DDC_STEP = 10
+# Reading via DDC takes ~0.5s, so the last known value is cached and
+# only re-read from the monitor when the cache is older than this.
+DDC_CACHE = File.join(ENV.fetch("XDG_RUNTIME_DIR", "/tmp"), "brightness-ddc")
+DDC_CACHE_TTL = 60
+
 # Get maximum brightness from `/sys` which is provided by the kernel
 def max_brightness
   `cat /sys/class/backlight/#{CARD}/max_brightness`.to_i
@@ -30,17 +40,9 @@ def brighter
 end
 
 def darker
-  @brightness = if (@brightness < 5)
-                  0
-                else
-                  (@brightness * 0.9).to_i
-                end
-  # Even when set to 0, Nvidia will still have a backlight on. Hence,
-  # it's allowed to go below 0 and manually shut it off. When going
-  # above 0, again, it'll automatically switch on, again.
-  if @brightness == 0 and CARD == "nvidia_0"
-    `xset dpms force off`
-  end
+  # Never go fully dark: at 0 the panel is unusable, and the old
+  # `xset dpms force off` blanked every screen, external ones included.
+  @brightness = [(@brightness * 0.9).to_i, 5].max
 end
 
 # Note: This needs passwordless sudo privileges
@@ -49,26 +51,77 @@ def set_brightness
   puts @brightness
 end
 
-def get_status
-  brightness = (100 * @brightness / @max_brightness).to_i
-  puts "💡 #{brightness}%"
+# External monitor (DDC/CI). Returns nil when no monitor is connected.
+def ddc_read
+  out = `sudo -n ddcutil -d #{DDC_DISPLAY} getvcp 10 --brief 2>/dev/null`
+  # Output: "VCP 10 C <current> <max>"
+  m = out.match(/VCP 10 C (\d+) (\d+)/) or return nil
+  (100 * m[1].to_i / m[2].to_i)
 end
 
-case ARGV[0]
-when "darker"
-  darker
-  set_brightness
-when "brighter"
-  brighter
-  set_brightness
-when "status"
-  get_status
-when "dark"
-  @brightness = 0
-  set_brightness
-when "bright"
-  @brightness = max_brightness
-  set_brightness
-else
-  puts 'Usage: brightness [darker|brighter|status|dark|bright'
+def ddc_cached
+  if File.exist?(DDC_CACHE) && Time.now - File.mtime(DDC_CACHE) < DDC_CACHE_TTL
+    value = File.read(DDC_CACHE).strip
+    return value == "none" ? nil : value.to_i
+  end
+  value = ddc_read
+  File.write(DDC_CACHE, value.nil? ? "none" : value.to_s)
+  value
+end
+
+def ddc_change(delta)
+  value = ddc_cached or return
+  value = (value + delta).clamp(10, 100)
+  File.write(DDC_CACHE, value.to_s)
+  `sudo -n ddcutil -d #{DDC_DISPLAY} setvcp 10 #{value} --noverify 2>/dev/null`
+end
+
+def ddc_set(value)
+  ddc_cached or return
+  File.write(DDC_CACHE, value.to_s)
+  `sudo -n ddcutil -d #{DDC_DISPLAY} setvcp 10 #{value} --noverify 2>/dev/null`
+end
+
+def get_status
+  brightness = (100 * @brightness / @max_brightness).to_i
+  external = ddc_cached
+  if external
+    puts "💡 #{brightness}% 🖥 #{external}%"
+  else
+    puts "💡 #{brightness}%"
+  end
+end
+
+# Serialise invocations: fast scrolling fires many processes at once and
+# DDC/CI can't handle concurrent writes.
+File.open("#{DDC_CACHE}.lock", File::RDWR | File::CREAT, 0600) do |lock|
+  lock.flock(File::LOCK_EX)
+  @brightness = current_brightness
+
+  case ARGV[0]
+  when "darker"
+    darker
+    set_brightness
+    ddc_change(-DDC_STEP)
+  when "brighter"
+    brighter
+    set_brightness
+    ddc_change(DDC_STEP)
+  when "status"
+    get_status
+  when "dark"
+    @brightness = 5
+    set_brightness
+    ddc_set(10)
+  when "bright"
+    @brightness = max_brightness
+    set_brightness
+    ddc_set(100)
+  when "external-darker"
+    ddc_change(-DDC_STEP)
+  when "external-brighter"
+    ddc_change(DDC_STEP)
+  else
+    puts 'Usage: brightness [darker|brighter|status|dark|bright|external-darker|external-brighter]'
+  end
 end
