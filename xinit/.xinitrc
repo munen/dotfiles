@@ -91,8 +91,8 @@ xset fp rehash
 # we understand it. Maybe it's the other way round, no clue. This does
 # the proxying:
 xrandr --setprovideroutputsource modesetting NVIDIA-0
-# And this activates the proxied screen
-xrandr --output eDP-1-1 --auto
+# Then apply the matching autorandr profile (docked: BenQ 5K + X1, mobile: X1)
+autorandr --change --default mobile
 
 # Better sound quality for web conferencing
 ~/bin/pa-load-module-echo-cancel &
