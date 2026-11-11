@@ -45,3 +45,12 @@ replug X still lists the BenQ as active, so the monitor stays dark until a real
 modeset: the listener toggles the BenQ to 70 Hz and back to 60 Hz. If no screen
 is active afterwards, it falls back to the X1. Log:
 `~/.cache/autorandr-listen.log`.
+
+## Change: back to 4K
+At 5K the GTX 1650 (4 GB) had 3.3–3.4 GB VRAM in use and ran at 80–95 %;
+together with Zoom and the iPhone camera the machine became unusable.
+`docked` now runs the BenQ at 3840x2160@60, the resolution X used before this
+plan. The listener forces its modeset with 50 Hz instead of 70 Hz (70 Hz only
+exists at 5K). Still one screen at a time: mirroring onto the X1 panel (also
+3840x2160) would share the framebuffer and cost almost no extra VRAM, but adds a
+second scanout and panel power for no use.
