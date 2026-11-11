@@ -41,42 +41,73 @@ usb_has_apple() {
   return 1
 }
 
-recover_device() {
-  if ! usb_has_apple; then
-    printf 'cam: no iPhone on the USB bus at all\n' >&2
-    printf 'cam: unplug/replug the cable (try another port or cable if it persists), then run cam again\n' >&2
-    return 1
-  fi
-  printf 'cam: iPhone is plugged in but usbmuxd lost it\n' >&2
-  [ -t 0 ] || { printf 'cam: run: sudo systemctl restart usbmuxd — then cam again\n' >&2; return 1; }
-  printf 'cam: restart usbmuxd now? [Y/n] '
-  local ans=""
-  read -r ans || ans=""
-  case "$ans" in n|N*) return 1 ;; esac
+restart_usbmuxd() {
   printf 'cam: restarting usbmuxd...\n' >&2
-  timeout 15 sudo systemctl restart usbmuxd 2>/dev/null || {
-    sudo systemctl kill --signal=SIGKILL usbmuxd 2>/dev/null || true
+  local sudo=(sudo)
+  [ -t 0 ] || sudo=(sudo -n)
+  timeout 15 "${sudo[@]}" systemctl restart usbmuxd 2>/dev/null || {
+    "${sudo[@]}" systemctl kill --signal=SIGKILL usbmuxd 2>/dev/null || true
     sleep 1
-    timeout 15 sudo systemctl start usbmuxd 2>/dev/null || true
+    timeout 15 "${sudo[@]}" systemctl start usbmuxd 2>/dev/null \
+      || { printf 'cam: could not restart usbmuxd — run: sudo systemctl restart usbmuxd\n' >&2; return 1; }
   }
   local i
   for i in 1 2 3 4 5 6 7 8 9 10; do
-    find_phone && { printf 'cam: phone is back\n' >&2; return 0; }
+    find_phone && return 0
     sleep 1
   done
-  printf 'cam: restart did not help — unplug/replug the iPhone, then run cam again\n' >&2
   return 1
+}
+
+# Wait for the user to unlock the phone and tap "Trust".
+pair_phone() {
+  printf 'cam: iPhone is not paired — unlock it and tap "Trust" when asked\n' >&2
+  local out i
+  for i in $(seq 30); do
+    out=$(idevicepair pair 2>&1) && { printf 'cam: paired\n' >&2; return 0; }
+    case "$out" in
+      *passcode*|*trust*|*dialog*) sleep 2 ;;
+      *) printf 'cam: %s\n' "$out" >&2; return 1 ;;
+    esac
+  done
+  printf 'cam: timed out waiting for "Trust"\n' >&2
+  return 1
+}
+
+# Make sure lockdownd on the phone answers. A stale usbmuxd still lists the
+# phone in idevice_id but every connection fails with "Mux error (-8)".
+ensure_device() {
+  if ! find_phone; then
+    usb_has_apple || die "no iPhone on the USB bus — unplug/replug the cable (try another port or cable), then run cam again"
+    printf 'cam: iPhone is plugged in but usbmuxd lost it\n' >&2
+    restart_usbmuxd || die "usbmuxd restart did not help — unplug/replug the iPhone, then run cam again"
+  fi
+  local out
+  out=$(idevicepair validate 2>&1) && return 0
+  case "$out" in
+    *"code -8"*|*[Mm]ux*)
+      printf 'cam: usbmuxd lost its connection to the iPhone\n' >&2
+      restart_usbmuxd || true
+      out=$(idevicepair validate 2>&1) && return 0
+      ;;
+  esac
+  case "$out" in
+    *passcode*) die "unlock the iPhone, then run cam again" ;;
+    *"not paired"*|*trust*|*dialog*|*[Pp]airing*) pair_phone && return 0 ;;
+    *"code -8"*|*[Mm]ux*) die "usbmuxd still cannot reach the iPhone — unplug/replug it, then run cam again" ;;
+  esac
+  die "cannot talk to the iPhone: $out"
 }
 
 start() {
   alive ffmpeg && die "already running — 'cam stop' first"
-  find_phone || recover_device || die "no iPhone found"
-  idevicepair validate >/dev/null 2>&1 || die "not paired — run: idevicepair pair"
+  ensure_device
   [ -e "$VCAM" ] || die "$VCAM missing — run: sudo modprobe v4l2loopback"
 
-  pkill -f "iproxy $LOCAL_PORT $DEVICE_PORT" 2>/dev/null || true
+  pkill -f "^iproxy .*$LOCAL_PORT $DEVICE_PORT\$" 2>/dev/null || true
   sleep 0.5
-  nohup iproxy "$LOCAL_PORT" "$DEVICE_PORT" >"$LOG/iproxy.log" 2>&1 </dev/null &
+  # Bind to loopback: iproxy 2.1.1 listens on all interfaces otherwise.
+  nohup iproxy -s 127.0.0.1 "$LOCAL_PORT" "$DEVICE_PORT" >"$LOG/iproxy.log" 2>&1 </dev/null &
   echo $! >"$RUN/iproxy.pid"
   sleep 1
   alive iproxy || die "iproxy failed — check $LOG/iproxy.log"
@@ -161,7 +192,7 @@ stop() {
       rm -f "$RUN/$p.pid"
     fi
   done
-  pkill -f "iproxy $LOCAL_PORT $DEVICE_PORT" 2>/dev/null || true
+  pkill -f "^iproxy .*$LOCAL_PORT $DEVICE_PORT\$" 2>/dev/null || true
   echo stopped
 }
 
