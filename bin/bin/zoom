@@ -4,4 +4,4 @@
 
 # QT_SCALE_FACTOR=0.5 flatpak run us.zoom.Zoom $*
 # DO NOT USE FLATPACK ZOOM
-QT_SCALE_FACTOR=0.5 /usr/bin/zoom $*
+QT_SCALE_FACTOR=0.5 /usr/bin/zoom "$@"
