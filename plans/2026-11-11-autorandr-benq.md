@@ -54,3 +54,6 @@ plan. The listener forces its modeset with 50 Hz instead of 70 Hz (70 Hz only
 exists at 5K). Still one screen at a time: mirroring onto the X1 panel (also
 3840x2160) would share the framebuffer and cost almost no extra VRAM, but adds a
 second scanout and panel power for no use.
+Verified 2026-11-11: unplug switched to the X1 panel within a second,
+replug back to the BenQ at 4K. The listener had to be restarted first:
+the instance started at login kept running the old 5K script.
